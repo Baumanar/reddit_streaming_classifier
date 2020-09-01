@@ -35,7 +35,7 @@ USERNAME=<username>
 PASSWORD=<password>
 ```
 
-For further info check the  [https://www.reddit.com/dev/api/](reddit api doc) and the [API access rules](https://github.com/reddit-archive/reddit/wiki/OAuth2 )
+For further info check the  [reddit api doc](https://www.reddit.com/dev/api/) and the [API access rules](https://github.com/reddit-archive/reddit/wiki/OAuth2 )
 
 
 ## Build & Run instructions:
