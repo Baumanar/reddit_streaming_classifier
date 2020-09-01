@@ -19,6 +19,21 @@ Python:
 - Keras
 - Kafka
 
+
+## Requirements
+
+A reddit account and a `reddit_kafka/auth.conf` file that looks like that:
+
+
+```
+CLIENT_ID=<client-id>
+CLIENT_SECRET=<client-secret>
+USER_AGENT=<user-agent>
+USERNAME=<username>
+PASSWORD=<password>
+```
+
+
 And others: [see python requirements](https://github.com/Baumanar/reddit_proj/blob/master/reddit_classifier/requirements.txt)
 
 ## Build & Run instructions:
