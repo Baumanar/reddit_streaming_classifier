@@ -1,0 +1,94 @@
+---
+version: '2.4'
+
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.5.1
+    container_name: zookeeper
+    #    networks:
+    #      - rmoff_kafka
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:5.5.1
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    links:
+      - zookeeper
+    ports:
+      - 9092:9092
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra
+    ports:
+      - "9042:9042"
+    restart: always
+    volumes:
+      - ./out/cassandra_data:/var/lib/cassandra
+      - "./cassandra-init.sh:/cassandra-init.sh"
+#    command: "sh /cassandra-init.sh"
+
+
+  reddit_kafka:
+    image: reddit-kafka
+    build:
+      context: ./reddit_kafka
+    container_name: reddit-kafka
+    depends_on:
+      - kafka
+    entrypoint:
+      - bash
+      - -c
+      - |
+        echo 'Giving Kafka a bit of time to start up...'
+        sleep 60
+        ./reddit-kafka kafka:29092
+
+
+  reddit_storage:
+    image: reddit-storage
+    build:
+      context: ./reddit_storage
+    container_name: reddit-storage
+    depends_on:
+      - kafka
+    entrypoint:
+      - bash
+      - -c
+      - |
+        echo 'Giving Kafka and Cassandra a bit of time to start up...'
+        sleep 60
+        ./reddit-storage kafka:29092
+
+
+  reddit-classifier:
+    image: reddit-classifier
+    build:
+      context: ./reddit_classifier
+    container_name: reddit-classifier
+    depends_on:
+      - kafka
+    entrypoint:
+      - bash
+      - -c
+      - |
+        echo 'Giving Kafka and Cassandra a bit of time to start up...'
+        sleep 60
+        python reddit_classifier.py
+
