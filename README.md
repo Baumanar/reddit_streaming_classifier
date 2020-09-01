@@ -19,6 +19,8 @@ Python:
 - Keras
 - Kafka
 
+And others: [see python requirements](https://github.com/Baumanar/reddit_proj/blob/master/reddit_classifier/requirements.txt)
+
 
 ## Requirements
 
@@ -33,8 +35,8 @@ USERNAME=<username>
 PASSWORD=<password>
 ```
 
+For further info check the  [https://www.reddit.com/dev/api/](reddit api doc) and the [API access rules](https://github.com/reddit-archive/reddit/wiki/OAuth2 )
 
-And others: [see python requirements](https://github.com/Baumanar/reddit_proj/blob/master/reddit_classifier/requirements.txt)
 
 ## Build & Run instructions:
 
