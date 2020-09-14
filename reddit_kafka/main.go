@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Baumanar/reddit_api_streaming/pkg"
-	"github.com/Baumanar/reddit_proj/cli"
-	channels "github.com/Baumanar/reddit_proj/reddit_kafka/pkg"
+	"github.com/Baumanar/reddit_classif_stream/cli"
+	channels "github.com/Baumanar/reddit_streaming_classifier/reddit_kafka/pkg"
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
 	"log"
 	"os"
@@ -21,15 +21,15 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
 	// Stream comments and submissions from some subreddits
 	c1_sub, err := client.StreamSubredditSubmissions("politics", "new", 10)
 	c2_sub, err := client.StreamSubredditSubmissions("memes", "new", 10)
 	c1_com, err := client.StreamSubredditComments("memes", 10)
+	c2_com, err := client.StreamSubredditComments("politics", 10)
 
 	// Merges all messages in two channels
 	submissionChan := channels.MergeSubmissionChannels(c1_sub, c2_sub)
-	commentChan := channels.MergeCommentChannels(c1_com)
+	commentChan := channels.MergeCommentChannels(c1_com, c2_com)
 
 	broker := cli.SetBroker(os.Args)
 	fmt.Printf("Using Broker: %v\n--------------------------\n\n", broker)
@@ -37,7 +37,7 @@ func main() {
 
 	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": broker.String()})
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	defer p.Close()
@@ -58,7 +58,7 @@ func main() {
 					TopicPartition: kafka.TopicPartition{Topic: &submissionTopic, Partition: kafka.PartitionAny},
 					Value:          payload,
 				}, nil)
-				log.Println("Sent a submission")
+				//log.Printf("Sent a submission: %s\n", submission.Subreddit)
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -73,7 +73,7 @@ func main() {
 					TopicPartition: kafka.TopicPartition{Topic: &commentTopic, Partition: kafka.PartitionAny},
 					Value:          payload,
 				}, nil)
-				log.Println("Sent a comment")
+				//log.Printf("Sent a comment: %s\n", comment.Subreddit)
 
 				if err != nil {
 					log.Fatal(err)

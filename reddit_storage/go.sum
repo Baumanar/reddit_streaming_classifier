@@ -11,9 +11,11 @@ github.com/Baumanar/reddit_api_streaming v0.0.0-20200823113148-c6a54962dd47 h1:0
 github.com/Baumanar/reddit_api_streaming v0.0.0-20200823113148-c6a54962dd47/go.mod h1:zIRKIrRyhOQIawA2/k8MGayM3u53GqMRzOWPOYMBMGY=
 github.com/Baumanar/reddit_api_streaming v0.0.0-20200824085306-6729a0f22652 h1:ztmajRmV+bdxUCoYNkwaxRadVd3Ly5dlCdfPsoM1o/Y=
 github.com/Baumanar/reddit_api_streaming v0.0.0-20200824085306-6729a0f22652/go.mod h1:XnFnhGzXWXuAfYbPUuYCkF7XKkCG243EHGUONEpDjDQ=
-github.com/Baumanar/reddit_proj v0.0.0-20200831213136-f1bd35f350ba h1:sjJIdSNhtFgWEwKXV0iT30DyPEY52kYD2rvkOXgW2+0=
-github.com/Baumanar/reddit_proj v0.0.0-20200901122505-e8dfe0ec295a h1:M06MM+qQA4BAkw4sCScP7fnw6tf1P8dC+GSJUoL6hWU=
-github.com/Baumanar/reddit_proj v0.0.0-20200901122505-e8dfe0ec295a/go.mod h1:YpOmgFK8uX8/LgCZyl/Sr5tq5lq6TLaJ6D9qkjUgvZQ=
+github.com/Baumanar/reddit_api_streaming v0.0.0-20200910093509-0d0af2b79ad6 h1:smr+3IjF6PyfVF4P6/UKzcnLOL/e2IPgnt4qkEAPl28=
+github.com/Baumanar/reddit_api_streaming v0.0.0-20200910093509-0d0af2b79ad6/go.mod h1:XnFnhGzXWXuAfYbPUuYCkF7XKkCG243EHGUONEpDjDQ=
+github.com/Baumanar/reddit_streaming_classifier v0.0.0-20200831213136-f1bd35f350ba h1:sjJIdSNhtFgWEwKXV0iT30DyPEY52kYD2rvkOXgW2+0=
+github.com/Baumanar/reddit_streaming_classifier v0.0.0-20200901122505-e8dfe0ec295a h1:M06MM+qQA4BAkw4sCScP7fnw6tf1P8dC+GSJUoL6hWU=
+github.com/Baumanar/reddit_streaming_classifier v0.0.0-20200901122505-e8dfe0ec295a/go.mod h1:YpOmgFK8uX8/LgCZyl/Sr5tq5lq6TLaJ6D9qkjUgvZQ=
 github.com/bitly/go-hostpool v0.0.0-20171023180738-a3a6125de932 h1:mXoPYz/Ul5HYEDvkta6I8/rnYM5gSdSV2tJ6XbZuEtY=
 github.com/bitly/go-hostpool v0.0.0-20171023180738-a3a6125de932/go.mod h1:NOuUCSz6Q9T7+igc/hlvDOUdtWKryOrtFyIVABv/p7k=
 github.com/bitly/go-hostpool v0.1.0 h1:XKmsF6k5el6xHG3WPJ8U0Ku/ye7njX7W81Ng7O2ioR0=

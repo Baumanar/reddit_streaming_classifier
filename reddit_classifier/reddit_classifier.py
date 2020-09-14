@@ -6,10 +6,24 @@ from keras.preprocessing.sequence import pad_sequences
 from utils import *
 from gensim.models import Word2Vec
 import tensorflow as tf
+from sys import argv
+
+
 tf.get_logger().setLevel('INFO')
 tf.autograph.set_verbosity(1)
 
-producer = Producer({'bootstrap.servers': 'kafka:29092'})
+try:
+    bs=argv[1]
+    print('\n🥾 bootstrap server: {}'.format(bs))
+    bootstrap_server=bs
+except:
+    # no bs X-D
+    bootstrap_server='localhost:9092'
+    print('⚠️  No bootstrap server defined, defaulting to {}\n'.format(bootstrap_server))
+
+
+
+producer = Producer({'bootstrap.servers': bootstrap_server})
 
 w2v_model = Word2Vec.load("word2vec_reddit.model")
 # Retrieve the weights from the model. This is used for initializing the weights
@@ -22,7 +36,7 @@ model = keras.models.load_model("lstm_model_keras")
 MAX_SEQUENCE_LENGTH = 200
 
 consumer = Consumer({
-        'bootstrap.servers': 'kafka:29092',
+        'bootstrap.servers': bootstrap_server,
         'group.id': 'classifGroup',
         'auto.offset.reset': 'earliest'
     })

@@ -2,7 +2,7 @@ package data
 
 import (
 	"errors"
-	"github.com/Baumanar/reddit_api_streaming/api_models"
+	"github.com/Baumanar/reddit_streaming_classifier/reddit_kafka/api_models"
 	"github.com/gocql/gocql"
 	"log"
 	"strings"
@@ -14,6 +14,8 @@ func CreateComment(comment *api_models.Comment, session *gocql.Session) error {
 		    body,
 		    id,
 		    name,
+    		subreddit,
+    		subreddit_id,
 		    link_id,
 			link_title,
 		    likes,
@@ -28,12 +30,14 @@ func CreateComment(comment *api_models.Comment, session *gocql.Session) error {
 			created_utc, 
 			num_comments
 		)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     	`
 	err := session.Query(q,
 		comment.Body,
 		comment.ID,
 		comment.Name,
+		comment.Subreddit,
+		comment.SubredditID,
 		comment.LinkID,
 		comment.LinkTitle,
 		comment.Likes,

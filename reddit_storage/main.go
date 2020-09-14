@@ -2,40 +2,54 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
-	"github.com/Baumanar/reddit_api_streaming/api_models"
-	"github.com/Baumanar/reddit_proj/reddit_storage/data"
+	"github.com/Baumanar/reddit_streaming_classifier/reddit_kafka/api_models"
+	"github.com/Baumanar/reddit_streaming_classifier/reddit_storage/data"
 	"github.com/gocql/gocql"
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
 	"log"
-	"os"
-	"github.com/Baumanar/reddit_proj/cli"
 	"time"
 )
 
 func main() {
 	//Connect to cassandra cluster
-	cluster := gocql.NewCluster("cassandra:9042")
-	//cluster.Authenticator = gocql.PasswordAuthenticator{
-	//	Username: "cassandra",
-	//	Password: "cassandra",
-	//}
+
+	var kafkaHost = flag.String("kafka", "my-release-kafka.default.svc.cluster.local:9092", "kafka host")
+	var cassHost = flag.String("cass", "cassandra.default.svc.cluster.local:9042", "cassandra host")
+	var cassUser = flag.String("u", "cassandra", "cassandra user")
+	var cassPassword = flag.String("p", "cassandra", "cassandra password")
+
+	flag.Parse()
+
+	//broker := cli.SetBroker(os.Args)
+	fmt.Printf("Using Broker: %v\n--------------------------\n\n", *kafkaHost)
+	fmt.Printf("Using Cassandra: %v\n--------------------------\n\n", *cassHost)
+
+
+	cluster := gocql.NewCluster(*cassHost)
+	cluster.Authenticator = gocql.PasswordAuthenticator{
+		Username: *cassUser,
+		Password: *cassPassword,
+	}
+	fmt.Println("OKAY LETS GO")
 	cluster.Keyspace = "reddit_storage"
-	cluster.Consistency = gocql.Quorum
+	//cluster.Consistency = gocql.Quorum
 
 	Session, err := cluster.CreateSession()
 	if err != nil {
-		log.Fatal("ERR",err)
+		log.Fatal("ERR ",err)
 	}
 	defer Session.Close()
 
 
-	broker := cli.SetBroker(os.Args)
-	fmt.Printf("Using Broker: %v\n--------------------------\n\n", broker)
+
+
+
 
 	// Create consumer
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": broker.String(),
+		"bootstrap.servers": *kafkaHost,
 		"group.id":          "storageGroup"})
 
 	if err != nil {
@@ -92,7 +106,7 @@ func main() {
 				if err != nil {
 					log.Fatal(err)
 				}
-				//log.Println("got com")
+				log.Println("got com")
 				err = data.CreateComment(&sub, Session)
 				if err != nil {
 					log.Fatal(err)
@@ -103,7 +117,7 @@ func main() {
 				if err != nil {
 					log.Fatal(err)
 				}
-				//log.Println("got sub")
+				log.Println("got sub")
 
 				err = data.CreateSubmission(&sub, Session)
 				if err != nil {

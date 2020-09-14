@@ -1,10 +1,10 @@
-module github.com/Baumanar/reddit_proj/reddit_storage
+module github.com/Baumanar/reddit_streaming_classifier/reddit_storage
 
 go 1.14
 
 require (
-	github.com/Baumanar/reddit_api_streaming v0.0.0-20200824085306-6729a0f22652
-	github.com/Baumanar/reddit_proj v0.0.0-20200901122505-e8dfe0ec295a // indirect
+	github.com/Baumanar/reddit_streaming_classifier/reddit_kafka v0.0.0-20200910093509-0d0af2b79ad6
+	github.com/Baumanar/reddit_streaming_classifier v0.0.0-20200901122505-e8dfe0ec295a // indirect
 	github.com/bitly/go-hostpool v0.1.0 // indirect
 	github.com/buger/goterm v0.0.0-20200322175922-2f3e71b85129 // indirect
 	github.com/confluentinc/confluent-kafka-go v1.4.2 // indirect
