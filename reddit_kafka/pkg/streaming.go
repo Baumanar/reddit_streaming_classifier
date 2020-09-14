@@ -1,7 +1,7 @@
 package pkg
 
 import (
-	"github.com/Baumanar/reddit_api_streaming/api_models"
+	"github.com/Baumanar/reddit_streaming_classifier/reddit_kafka/api_models"
 	"log"
 	"time"
 )

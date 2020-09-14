@@ -1,6 +1,6 @@
 package pkg
 
-import "github.com/Baumanar/reddit_api_streaming/api_models"
+import "github.com/Baumanar/reddit_streaming_classifier/reddit_kafka/api_models"
 
 func MergeSubmissionChannels(channels ...<-chan api_models.Submission) chan api_models.Submission {
 	outChan := make(chan api_models.Submission)

@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"github.com/Baumanar/reddit_streaming_classifier/reddit_kafka"
 	"regexp"
 	"strings"
 )

@@ -1,0 +1,8 @@
+github.com/Baumanar/reddit_api_streaming v0.0.0-20200912085805-a79d890fe42e h1:yYbcIN3+5jDSeQ+vSpESWRaDRfP9m2OEwSr1v0hn8UU=
+github.com/Baumanar/reddit_api_streaming v0.0.0-20200912085805-a79d890fe42e/go.mod h1:XnFnhGzXWXuAfYbPUuYCkF7XKkCG243EHGUONEpDjDQ=
+github.com/Baumanar/reddit_streaming_classifier v0.0.0-20200901143450-24a4aba0c569 h1:TyBp0PpvFrLCLjJZdMOOBi6nkQPtKHOOPsyz6/xR1u4=
+github.com/Baumanar/reddit_streaming_classifier v0.0.0-20200901143450-24a4aba0c569/go.mod h1:3xmSZvlXdywKgj4s0mHBha+djsPlCGyO6HHTwLJTsWY=
+github.com/confluentinc/confluent-kafka-go v1.4.2 h1:13EK9RTujF7lVkvHQ5Hbu6bM+Yfrq8L0MkJNnjHSd4Q=
+github.com/confluentinc/confluent-kafka-go v1.4.2/go.mod h1:u2zNLny2xq+5rWeTQjFHbDzzNuba4P1vo31r9r4uAdg=
+gopkg.in/confluentinc/confluent-kafka-go.v1 v1.4.2 h1:JabkIV98VYFqYKHHzXtgGMFuRgFBNTNzBytbGByzrJI=
+gopkg.in/confluentinc/confluent-kafka-go.v1 v1.4.2/go.mod h1:ZdI3yfYmdNSLQPNCpO1y00EHyWaHG5EnQEyL/ntAegY=
