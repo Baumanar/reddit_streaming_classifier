@@ -14,7 +14,7 @@ import (
 
 type ReqType string
 
-const(
+const (
 	Submission       ReqType = "submission"
 	SubredditComment ReqType = "subreddit_comments"
 )
@@ -27,8 +27,7 @@ type Request struct {
 	Payload   map[string]string
 }
 
-
-func (c RedditClient) Request(request Request) ([]byte, error){
+func (c RedditClient) Request(request Request) ([]byte, error) {
 	values := "?"
 	for i, v := range request.Payload {
 		v = url.QueryEscape(v)
@@ -57,11 +56,10 @@ func (c RedditClient) Request(request Request) ([]byte, error){
 	return data, nil
 }
 
-
-func (c *RedditClient) checkRateLimit(response *http.Response){
+func (c *RedditClient) checkRateLimit(response *http.Response) {
 	//rateLimitUsed, _ := strconv.Atoi(response.Header.Get("X-Ratelimit-Used"))
 	temp, err := strconv.ParseFloat(response.Header.Get("X-Ratelimit-Remaining"), 64)
-	if err != nil{
+	if err != nil {
 		log.Fatal(err)
 	}
 	rateLimitRemaining := int(temp)
@@ -69,12 +67,11 @@ func (c *RedditClient) checkRateLimit(response *http.Response){
 	if rateLimitRemaining <= 10 {
 		c.Stream.RateLimit.Add(1)
 		fmt.Printf("Too many request, waiting %ds\n", rateLimitReset)
-		time.Sleep(time.Duration(rateLimitReset)  * time.Second)
+		time.Sleep(time.Duration(rateLimitReset) * time.Second)
 		c.Stream.RateLimit.Done()
 	}
 
 }
-
 
 // RedditErr is a struct to store reddit error messages
 type RedditErr struct {
@@ -91,7 +88,7 @@ func findRedditError(data []byte) error {
 	return nil
 }
 
-func (c *RedditClient) GetSubredditSubmissions(subreddit string, sort string, tdur string, limit int)  ([]api_models.Submission, error){
+func (c *RedditClient) GetSubredditSubmissions(subreddit string, sort string, tdur string, limit int) ([]api_models.Submission, error) {
 	target := RedditOauth + "/r/" + subreddit + "/" + sort + ".json"
 	req := Request{
 		ReqType:   Submission,
@@ -101,35 +98,6 @@ func (c *RedditClient) GetSubredditSubmissions(subreddit string, sort string, td
 		Payload: map[string]string{
 			"limit": strconv.Itoa(limit),
 			"t":     tdur,
-			},
-	}
-	ans, err := c.Request(req)
-	if err != nil {
-		return nil, err
-	}
-	var ret api_models.SubmissionListing
-	err = json.Unmarshal(ans, &ret)
-	if err != nil {
-		return nil, err
-	}
-	sumbmissions, err := ret.UnwrapData()
-	if err != nil {
-		return nil, err
-	}
-	return sumbmissions, nil
-}
-
-func (c *RedditClient) GetSubredditSubmissionsAfter(subreddit string, last string, limit int) ([]api_models.Submission, error){
-
-	target := RedditOauth + "/r/" + subreddit + "/new.json"
-	req := Request{
-		ReqType:   Submission,
-		SubReddit: subreddit,
-		Method:    "GET",
-		Path:      target,
-		Payload: map[string]string{
-			"limit": strconv.Itoa(limit),
-			"before":     last,
 		},
 	}
 	ans, err := c.Request(req)
@@ -148,7 +116,36 @@ func (c *RedditClient) GetSubredditSubmissionsAfter(subreddit string, last strin
 	return sumbmissions, nil
 }
 
-func (c *RedditClient) GetSubredditComments(subreddit string, sort string, tdur string, limit int) ([]api_models.Comment, error){
+func (c *RedditClient) GetSubredditSubmissionsAfter(subreddit string, last string, limit int) ([]api_models.Submission, error) {
+
+	target := RedditOauth + "/r/" + subreddit + "/new.json"
+	req := Request{
+		ReqType:   Submission,
+		SubReddit: subreddit,
+		Method:    "GET",
+		Path:      target,
+		Payload: map[string]string{
+			"limit":  strconv.Itoa(limit),
+			"before": last,
+		},
+	}
+	ans, err := c.Request(req)
+	if err != nil {
+		return nil, err
+	}
+	var ret api_models.SubmissionListing
+	err = json.Unmarshal(ans, &ret)
+	if err != nil {
+		return nil, err
+	}
+	sumbmissions, err := ret.UnwrapData()
+	if err != nil {
+		return nil, err
+	}
+	return sumbmissions, nil
+}
+
+func (c *RedditClient) GetSubredditComments(subreddit string, sort string, tdur string, limit int) ([]api_models.Comment, error) {
 	target := RedditOauth + "/r/" + subreddit + "/comments.json"
 	req := Request{
 		ReqType:   SubredditComment,
@@ -157,7 +154,7 @@ func (c *RedditClient) GetSubredditComments(subreddit string, sort string, tdur 
 		Path:      target,
 		Payload: map[string]string{
 			"limit": strconv.Itoa(limit),
-			"sort":     sort,
+			"sort":  sort,
 			"t":     tdur,
 		},
 	}
@@ -177,7 +174,6 @@ func (c *RedditClient) GetSubredditComments(subreddit string, sort string, tdur 
 	return sumbmissions, nil
 }
 
-
 func (c *RedditClient) GetSubredditCommentsAfter(subreddit string, sort string, last string, limit int) ([]api_models.Comment, error) {
 	target := RedditOauth + "/r/" + subreddit + "/comments.json"
 	req := Request{
@@ -186,9 +182,9 @@ func (c *RedditClient) GetSubredditCommentsAfter(subreddit string, sort string, 
 		Method:    "GET",
 		Path:      target,
 		Payload: map[string]string{
-			"limit": strconv.Itoa(limit),
-			"sort":  sort,
-			"before":     last,
+			"limit":  strconv.Itoa(limit),
+			"sort":   sort,
+			"before": last,
 		},
 	}
 	ans, err := c.Request(req)
@@ -206,4 +202,3 @@ func (c *RedditClient) GetSubredditCommentsAfter(subreddit string, sort string, 
 	}
 	return sumbmissions, nil
 }
-

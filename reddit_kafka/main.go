@@ -10,7 +10,6 @@ import (
 	"os"
 )
 
-
 func main() {
 
 	// Authenticate with the reddit client
@@ -32,7 +31,6 @@ func main() {
 
 	broker := cli.SetBroker(os.Args)
 	fmt.Printf("Using Broker: %v\n--------------------------\n\n", broker)
-
 
 	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": broker.String()})
 	if err != nil {

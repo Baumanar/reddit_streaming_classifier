@@ -23,6 +23,10 @@ create table reddit_storage.comments(
     created double,
     created_utc double,
     num_comments int,
+    is_classified boolean,
+    is_hatespeech boolean,
+    proba_hateful double,
+    proba_not_hateful double,
     PRIMARY KEY(name)
     );
 
@@ -43,77 +47,16 @@ create table reddit_storage.submissions(
     created double,
     created_utc double,
     num_comments int,
+    is_classified boolean,
+    is_hatespeech boolean,
+    proba_hateful double,
+    proba_not_hateful double,
     PRIMARY KEY(name)
     );
 
 
-create table reddit_storage.classifications(
-   name text,
-   proba_hateful double,
-   proba_not_hateful double,
-   class int,
-   PRIMARY KEY(name)
-);
-
-
---
 -- drop table reddit_storage.submissions;
 -- drop table reddit_storage.comments;
-curl -XPUT -H 'Content-Type: application/json' 'http://localhost:9200/comments' -d '{
-    "settings": { "keyspace":"reddit_storage" },
-    "mappings": {
-        "comments" : {
-            "discover":".*"
-        }
-    }
-}'
-
-
-curl -XGET "http://localhost:9200/comments/_search?pretty=true" \
--H "Content-Type: application/json" \
--d '
-{
-    "query": {
-        "bool": {
-            "must": [
-                {
-                    "term": {"parent_id" : "t1_g57m23q"}
-                }
-            ]
-        }
-    }
-}
-'
-
-
-curl -XPUT "http://localhost:9200/submissions" \
--H "Content-Type: application/json" \
--d '{
-    "settings": {
-        "keyspace": "reddit_storage"
-    },
-    "mapping": {
-        "submissions": {
-            "_doc": ".*"
-        }
-    }
-}'
-
-
-curl -XGET http://localhost:9200/_cat/indices
-
-curl -XPUT "http://localhost:9200/classifications" \
--H "Content-Type: application/json" \
--d '{
-  "settings":{
-    "keyspace": "reddit_storage"
-  },
-  "mappings": {
-    "classifications" : {
-      "discover" : ".*"
-    }
-  }
-}'
 
 
 

@@ -6,6 +6,8 @@ In a first version this project detects hate speech comments from new comments o
 The project is written in Golang for the streaming components and the storage utilities and Python for 
 the classification. The services communicate with Kafka and the data is stored in a cassandra database.
 
+![arch](images/arch.png)
+
 
 ## Dependencies
 
@@ -19,7 +21,7 @@ Python:
 - Keras
 - Kafka
 
-And others: [see python requirements](https://github.com/Baumanar/reddit_proj/blob/master/reddit_classifier/requirements.txt)
+And others: [see python requirements](https://github.com/Baumanar/reddit_streaming_classifier/blob/master/reddit_classifier/requirements.txt)
 
 
 ## Requirements
@@ -54,3 +56,8 @@ To run everything together:
 
 - Build the images: `docker-compose -f docker-compose.yml build`
 - Run the docker-compose: `docker-compose -f docker-compose.yml up`
+
+
+## Kubernetes setup
+
+If you want to deploy this project to kubernetes, see the kubernetes [README]()

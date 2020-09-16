@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: reddit-storage
+  name: reddit-storage
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: reddit-storage
+    spec:
+      containers:
+      - command:
+        - bash
+        - -c
+        - |
+          echo 'storage start up...'
+          ./reddit-storage -kafka=my-release-kafka.default.svc.cluster.local:9092 -cass=my-release-elassandra.default.svc.cluster.local:9042
+        image: gcr.io/<project-id>/reddit-storage:latest
+        name: reddit-storage
+        resources: {}
+      restartPolicy: Always
+status: {}
+

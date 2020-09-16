@@ -102,7 +102,6 @@ func CreateSubmission(submission *api_models.Submission, session *gocql.Session)
 	return err
 }
 
-
 func CreateClassification(classification *Classification, session *gocql.Session) error {
 	q := `
 		INSERT INTO classifications(
@@ -197,16 +196,15 @@ func GetSubmission(name string, session *gocql.Session) (*api_models.Submission,
 
 func UpdateComment(name string, params map[string]interface{}, session *gocql.Session) error {
 
-	q := `UPDATE comments `
+	q := `UPDATE comments SET `
 	values := make([]interface{}, 0)
 	for k, v := range params {
-		q += "SET " + k + "= ?, "
+		q +=  k + "= ?, "
 		values = append(values, v)
 	}
 
 	q = strings.TrimSuffix(q, ", ")
 	q += " WHERE name = ?"
-
 	values = append(values, name)
 
 	err := session.Query(q, values...).Exec()
@@ -218,18 +216,18 @@ func UpdateComment(name string, params map[string]interface{}, session *gocql.Se
 	return nil
 }
 
+
 func UpdateSubmission(name string, params map[string]interface{}, session *gocql.Session) error {
 
-	q := `UPDATE submissions `
+	q := `UPDATE submissions SET `
 	values := make([]interface{}, 0)
 	for k, v := range params {
-		q += "SET " + k + "= ?, "
+		q += k + "= ?, "
 		values = append(values, v)
 	}
 
 	q = strings.TrimSuffix(q, ", ")
 	q += " WHERE name = ?"
-
 	values = append(values, name)
 
 	err := session.Query(q, values...).Exec()
@@ -239,4 +237,47 @@ func UpdateSubmission(name string, params map[string]interface{}, session *gocql
 	}
 
 	return nil
+}
+
+func UpdateCommentClassification(name string, isClassified bool, isHatespeech bool, probaHateful float64, probaNotHateful float64,session *gocql.Session) error {
+	params := map[string]interface{}{
+		"is_classified": isClassified,
+		"is_hatespeech": isHatespeech,
+		"proba_hateful" : probaHateful,
+		"proba_not_hateful" : probaNotHateful,
+	}
+	err := UpdateComment(name, params, session)
+	if err != nil {
+		log.Printf("ERROR: fail UpdateCommentClassification, %s", err.Error())
+		return err
+	}
+	return nil
+}
+
+func UpdateSubmissionClassification(name string, isClassified bool, isHatespeech bool, probaHateful float64, probaNotHateful float64,session *gocql.Session) error {
+	params := map[string]interface{}{
+		"is_classified": isClassified,
+		"is_hatespeech": isHatespeech,
+		"proba_hateful" : probaHateful,
+		"proba_not_hateful" : probaNotHateful,
+	}
+	err := UpdateSubmission(name, params, session)
+	if err != nil {
+		log.Printf("ERROR: fail UpdateSubmissionClassification, %s", err.Error())
+		return err
+	}
+	return nil
+}
+
+
+func UpdateClassification(tp string, name string, isClassified bool, isHatespeech bool, probaHateful float64, probaNotHateful float64,session *gocql.Session) error {
+	if tp == "comment" {
+		err := UpdateCommentClassification(name, isClassified, isHatespeech, probaHateful, probaNotHateful, session)
+		return err
+	}
+	if tp == "submission" {
+		err := UpdateSubmissionClassification(name, isClassified, isHatespeech, probaHateful, probaNotHateful, session)
+		return err
+	}
+	return errors.New("unknown type")
 }

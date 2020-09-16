@@ -25,5 +25,3 @@ func MergeCommentChannels(channels ...<-chan api_models.Comment) chan api_models
 	}
 	return outChan
 }
-
-

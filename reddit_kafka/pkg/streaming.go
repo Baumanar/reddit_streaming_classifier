@@ -18,16 +18,16 @@ func (r *RedditClient) StreamSubredditComments(subreddit string, refresh int) (<
 	}
 	go func() {
 		for {
-			new, err := r.GetSubredditCommentsAfter(subreddit, "new",  last, 100)
+			new, err := r.GetSubredditCommentsAfter(subreddit, "new", last, 100)
 			if err != nil {
 				log.Fatal("error at GetSubredditCommentsAfter", err)
 			}
 			if len(new) < 1 {
-				log.Printf("No new comment found in: %s, sleeping for %ds\n", subreddit, refresh)
+				log.Printf("No new comment found in: %s %s , sleeping for %ds\n", subreddit, last, refresh)
 				time.Sleep(time.Duration(refresh) * time.Second)
 				continue
 			} else {
-				log.Printf("Found %d new comments in: %s\n", len(new), subreddit)
+				log.Printf("Found %d new comments in: %s %s\n", len(new), subreddit, last)
 			}
 			last = new[0].Name
 			for _, v := range new {
@@ -40,9 +40,6 @@ func (r *RedditClient) StreamSubredditComments(subreddit string, refresh int) (<
 	}()
 	return c, nil
 }
-
-
-
 
 func (r *RedditClient) StreamSubredditSubmissions(subreddit string, sort string, refresh int) (<-chan api_models.Submission, error) {
 	c := make(chan api_models.Submission, 100)
@@ -61,11 +58,11 @@ func (r *RedditClient) StreamSubredditSubmissions(subreddit string, sort string,
 				log.Fatal("error at GetSubredditSubmissionsAfter", err)
 			}
 			if len(new) < 1 {
-				log.Printf("No new submission found in: %s, sleeping for %ds\n", subreddit, refresh)
+				log.Printf("No new submission found in: %s %s, sleeping for %ds\n", subreddit, last, refresh)
 				time.Sleep(time.Duration(refresh) * time.Second)
 				continue
 			} else {
-				log.Printf("Found %d new submissions in: %s\n", len(new), subreddit)
+				log.Printf("Found %d new submissions in: %s %s\n", len(new), subreddit, last)
 			}
 			last = new[0].Name
 
@@ -79,6 +76,3 @@ func (r *RedditClient) StreamSubredditSubmissions(subreddit string, sort string,
 	}()
 	return c, nil
 }
-
-
-

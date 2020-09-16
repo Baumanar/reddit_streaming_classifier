@@ -26,7 +26,6 @@ func main() {
 	fmt.Printf("Using Broker: %v\n--------------------------\n\n", *kafkaHost)
 	fmt.Printf("Using Cassandra: %v\n--------------------------\n\n", *cassHost)
 
-
 	cluster := gocql.NewCluster(*cassHost)
 	cluster.Authenticator = gocql.PasswordAuthenticator{
 		Username: *cassUser,
@@ -38,14 +37,9 @@ func main() {
 
 	Session, err := cluster.CreateSession()
 	if err != nil {
-		log.Fatal("ERR ",err)
+		log.Fatal("ERR ", err)
 	}
 	defer Session.Close()
-
-
-
-
-
 
 	// Create consumer
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
@@ -56,7 +50,7 @@ func main() {
 		log.Fatal("err", err)
 	}
 	err = consumer.SubscribeTopics([]string{"reddit_stream_comments", "reddit_stream_submissions", "reddit_classification"}, nil)
-	if err != nil{
+	if err != nil {
 		log.Fatal("☠️ Uh oh, there was an error subscribing to the topic :\n\t%v", err)
 	}
 	//tm.Clear()
@@ -79,15 +73,21 @@ func main() {
 				log.Printf("Number of submissions in database: %s\n", submissionCount)
 			}
 
-			var classificationCount string
-			iter = Session.Query(`SELECT count(*) FROM classifications`).Iter()
-			_, err = iter.RowData()
-			if err != nil{
-				log.Fatal(err)
+			var submissionClassifCount string
+			iter = Session.Query(`SELECT count(*) FROM submissions WHERE is_classified = true ALLOW FILTERING`).Iter()
+			for iter.Scan(&submissionClassifCount) {
+				log.Printf("Number of submissions classified in database: %s\n", submissionClassifCount)
 			}
-			for iter.Scan(&classificationCount) {
-				log.Printf("Number of classifications in database: %s\n", classificationCount)
+
+			var commentClassifCount string
+			iter = Session.Query(`SELECT count(*) FROM comments WHERE is_classified = true ALLOW FILTERING`).Iter()
+			for iter.Scan(&commentClassifCount) {
+				log.Printf("Number of comments classified in database: %s\n", commentClassifCount)
 			}
+			//iter.Scan(&submissionClassifCount) {
+			//	log.Printf("Number of submissions in database: %s\n", submissionCount)
+			//}
+
 			//tm.Flush()
 			time.Sleep(10 * time.Second)
 
@@ -106,7 +106,7 @@ func main() {
 				if err != nil {
 					log.Fatal(err)
 				}
-				log.Println("got com")
+				//log.Println("got com")
 				err = data.CreateComment(&sub, Session)
 				if err != nil {
 					log.Fatal(err)
@@ -117,7 +117,7 @@ func main() {
 				if err != nil {
 					log.Fatal(err)
 				}
-				log.Println("got sub")
+				//log.Println("got sub")
 
 				err = data.CreateSubmission(&sub, Session)
 				if err != nil {
@@ -129,7 +129,9 @@ func main() {
 				if err != nil {
 					log.Fatal(err)
 				}
-					err = data.CreateClassification(&classif, Session)
+
+				err = data.UpdateClassification(classif.Type, classif.Name, true, classif.Class==1, classif.ProbaHateful, classif.ProbaNotHateful, Session)
+				//err = data.CreateClassification(&classif, Session)
 				if err != nil {
 					log.Fatal(err)
 				}

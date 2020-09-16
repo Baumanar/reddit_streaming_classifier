@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: reddit-classifier
+  name: reddit-classifier
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: reddit-classifier
+    spec:
+      containers:
+      - command:
+        - bash
+        - -c
+        - |
+          echo 'start up...'
+          python reddit_classifier.py my-release-kafka.default.svc.cluster.local:9092
+        image: gcr.io/<project-id>/reddit-classifier
+        name: reddit-classifier
+        resources: {}
+      restartPolicy: Always
+status: {}

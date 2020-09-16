@@ -1,5 +1,5 @@
 ---
-version: '2.4'
+version: '3'
 
 
 services:
@@ -12,9 +12,9 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
-  kafka:
+  broker:
     image: confluentinc/cp-kafka:5.5.1
-    container_name: kafka
+    container_name: broker
     depends_on:
       - zookeeper
     links:
@@ -27,7 +27,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     volumes:
@@ -42,7 +42,7 @@ services:
     volumes:
       - ./out/cassandra_data:/var/lib/cassandra
       - "./cassandra-init.sh:/cassandra-init.sh"
-#    command: "sh /cassandra-init.sh"
+    command: "sh /cassandra-init.sh"
 
 
   reddit_kafka:
@@ -51,14 +51,14 @@ services:
       context: ./reddit_kafka
     container_name: reddit-kafka
     depends_on:
-      - kafka
+      - broker
     entrypoint:
       - bash
       - -c
       - |
         echo 'Giving Kafka a bit of time to start up...'
         sleep 60
-        ./reddit-kafka kafka:29092
+        ./reddit-kafka broker:29092
 
 
   reddit_storage:
@@ -67,14 +67,14 @@ services:
       context: ./reddit_storage
     container_name: reddit-storage
     depends_on:
-      - kafka
+      - broker
     entrypoint:
       - bash
       - -c
       - |
         echo 'Giving Kafka and Cassandra a bit of time to start up...'
         sleep 60
-        ./reddit-storage kafka:29092
+        ./reddit-storage -kafka=broker:29092 -cass=cassandra:9042
 
 
   reddit-classifier:
@@ -83,12 +83,12 @@ services:
       context: ./reddit_classifier
     container_name: reddit-classifier
     depends_on:
-      - kafka
+      - broker
     entrypoint:
       - bash
       - -c
       - |
         echo 'Giving Kafka and Cassandra a bit of time to start up...'
         sleep 60
-        python reddit_classifier.py
+        python reddit_classifier.py broker:29092
 

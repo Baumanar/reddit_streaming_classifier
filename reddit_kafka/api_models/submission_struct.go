@@ -18,7 +18,7 @@ type PostListingChild struct {
 	Data Submission `json:"data"`
 }
 
-func (p *SubmissionListing) UnwrapData() ([]Submission, error){
+func (p *SubmissionListing) UnwrapData() ([]Submission, error) {
 	var comments []Submission
 	for _, children := range p.Data.Children {
 		comments = append(comments, children.Data)
@@ -26,23 +26,26 @@ func (p *SubmissionListing) UnwrapData() ([]Submission, error){
 	return comments, nil
 }
 
-
 type Submission struct {
-	Title                      string        `json:"title" cql:"title"`
-	ID                         string        `json:"id" cql:"id"`
-	Name                       string        `json:"name" cql:"name"`
-	Subreddit                  string        `json:"subreddit" cql:"subreddit"`
-	SubredditID                string        `json:"subreddit_id" cql:"subreddit_id"`
-	Likes                      int64       `json:"likes" cql:"likes"`
-	Permalink                  string        `json:"permalink" cql:"permalink"`
-	URL                        string        `json:"url" cql:"url"`
-	Ups                        int64         `json:"ups" cql:"ups"`
-	Downs                      int64         `json:"downs" cql:"downs"`
-	Author                     string        `json:"author" cql:"author"`
-	AuthorFullname             string        `json:"author_fullname" cql:"author_fullname"`
-	Created                    float64        `json:"created" cql:"created"`
-	CreatedUTC                 float64         `json:"created_utc" cql:"created_utc"`
-	NumComments                int64         `json:"num_comments" cql:"num_comments"`
+	Title           string  `json:"title" cql:"title"`
+	ID              string  `json:"id" cql:"id"`
+	Name            string  `json:"name" cql:"name"`
+	Subreddit       string  `json:"subreddit" cql:"subreddit"`
+	SubredditID     string  `json:"subreddit_id" cql:"subreddit_id"`
+	Likes           int64   `json:"likes" cql:"likes"`
+	Permalink       string  `json:"permalink" cql:"permalink"`
+	URL             string  `json:"url" cql:"url"`
+	Ups             int64   `json:"ups" cql:"ups"`
+	Downs           int64   `json:"downs" cql:"downs"`
+	Author          string  `json:"author" cql:"author"`
+	AuthorFullname  string  `json:"author_fullname" cql:"author_fullname"`
+	Created         float64 `json:"created" cql:"created"`
+	CreatedUTC      float64 `json:"created_utc" cql:"created_utc"`
+	NumComments     int64   `json:"num_comments" cql:"num_comments"`
+	IsClassified    bool    `json:"is_classified" cql: "is_classified"`
+	IsHatespeech    bool    `json:"is_hatespech" cql: "is_hatespech"`
+	ProbaHateful    float64 `json:"proba_hateful" cql:"proba_hateful"`
+	ProbaNotHateful float64 `json:"proba_not_hateful" cql:"proba_not_hateful"`
 	//Selftext                   string        `json:"selftext"`
 	//Saved                      bool          `json:"saved"`
 	//Gilded                     int64         `json:"gilded"`

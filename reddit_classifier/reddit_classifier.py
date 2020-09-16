@@ -46,6 +46,7 @@ counter = 0
 message_count = 0
 sentence_batch = []
 batch_ids = []
+batch_types = []
 
 while True:
 
@@ -57,11 +58,14 @@ while True:
         if message.topic() == "reddit_stream_comments":
             sentence_batch.append(sentence['body'])
             batch_ids.append(sentence['name'])
+            batch_types.append('comment')
             message_count += 1
         if message.topic()  == "reddit_stream_submissions":
             sentence_batch.append(sentence['title'])
             batch_ids.append(sentence['name'])
-            message_count += 1
+            batch_types.append('submission')
+
+        message_count += 1
         if len(sentence_batch) == 100:
 
             sentences = sanitize_sentences(sentence_batch)
@@ -70,12 +74,14 @@ while True:
             predictions_proba = model.predict(set_x)
             classes = np.argmax(predictions_proba, axis=1)
             print("    Done pred for batch", counter, len(sentences))
-            return_messages = list(zip(batch_ids, predictions_proba, classes))
+            return_messages = list(zip(batch_ids, batch_types, predictions_proba, classes))
             for return_message in return_messages:
                 json_message = json.dumps({"name":return_message[0],
-                                  "proba_hateful":float(return_message[1][1]),
-                                  "proba_not_hateful": float(return_message[1][0]),
-                                  "class":int(return_message[2])})
+                                          "type": return_message[1],
+                                          "proba_hateful":float(return_message[2][1]),
+                                          "proba_not_hateful": float(return_message[2][0]),
+                                          "is_hatespech":int(return_message[3])})
+
                 producer.produce("reddit_classification", json_message.encode())
             sentence_batch = []
             batch_ids = []

@@ -4,8 +4,6 @@ type Gilding struct {
 	Gid map[string]int `json:"gid"`
 }
 
-
-
 type ResizedIcon struct {
 	URL    string `json:"url"`
 	Width  int64  `json:"width"`
@@ -38,16 +36,19 @@ type Image struct {
 }
 
 type AwardSubType string
+
 const (
 	Global AwardSubType = "GLOBAL"
 )
 
 type AwardType string
+
 const (
 	AwardTypeGlobal AwardType = "global"
 )
 
 type IconFormat string
+
 const (
 	Apng IconFormat = "APNG"
 	PNG  IconFormat = "PNG"

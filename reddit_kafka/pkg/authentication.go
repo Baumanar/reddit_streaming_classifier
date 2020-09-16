@@ -12,12 +12,10 @@ import (
 	"strings"
 )
 
-const(
-	tokenURL = "https://www.reddit.com/api/v1/access_token"
+const (
+	tokenURL    = "https://www.reddit.com/api/v1/access_token"
 	RedditOauth = "https://oauth.reddit.com"
 )
-
-
 
 type AuthConfig struct {
 	ClientID     string
@@ -27,18 +25,15 @@ type AuthConfig struct {
 	Password     string
 }
 
-
-
 func GetConfigByEnv() AuthConfig {
 	return AuthConfig{
-		ClientID : os.Getenv("CLIENT_ID"),
-		ClientSecret : os.Getenv("CLIENT_SECRET"),
-		UserAgent : os.Getenv("USER_AGENT"),
-		Username : os.Getenv("USERNAME"),
-		Password : os.Getenv("PASSWORD"),
+		ClientID:     os.Getenv("CLIENT_ID"),
+		ClientSecret: os.Getenv("CLIENT_SECRET"),
+		UserAgent:    os.Getenv("USER_AGENT"),
+		Username:     os.Getenv("USERNAME"),
+		Password:     os.Getenv("PASSWORD"),
 	}
 }
-
 
 func GetConfigByFile(filePath string) AuthConfig {
 	ClientId, _ := regexp.Compile(`CLIENT_ID\s*=\s*(.+)`)
@@ -61,14 +56,12 @@ func GetConfigByFile(filePath string) AuthConfig {
 	return creds
 }
 
-
-func Authenticate(config AuthConfig) (*RedditClient, error){
+func Authenticate(config AuthConfig) (*RedditClient, error) {
 
 	form := url.Values{}
 	form.Add("grant_type", "password")
 	form.Add("username", config.Username)
 	form.Add("password", config.Password)
-
 
 	raw := config.ClientID + ":" + config.ClientSecret
 	encoded := base64.StdEncoding.EncodeToString([]byte(raw))
