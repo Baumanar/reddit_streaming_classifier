@@ -60,4 +60,4 @@ To run everything together:
 
 ## Kubernetes setup
 
-If you want to deploy this project to kubernetes, see the kubernetes [README]()
+If you want to deploy this project to kubernetes, see the kubernetes [README](kube-deploy/README.md)

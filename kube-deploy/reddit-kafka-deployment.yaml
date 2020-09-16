@@ -22,7 +22,7 @@ spec:
         - bash
         - -c
         - |
-          echo 'Giving Kafka a bit of time to start up...'
+          echo 'api stream start up...'
           ./reddit-kafka my-release-kafka.default.svc.cluster.local:9092
         image: gcr.io/<project-id>/reddit-kafka:latest
         name: reddit-kafka

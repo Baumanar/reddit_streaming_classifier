@@ -5,7 +5,7 @@ This project requires helm charts for kafka and elassandra. Elassandra integrate
 ## Helm charts installation
 
 - Install kafka: `helm install <kafka-release-name> bitnami/kafka`
-- Install elassandra: `helm install my-release-elassandra --set image.tag="6.8.4.10" strapdata/elassandra`
+- Install elassandra: `helm install <elassandra-release-name> --set image.tag="6.8.4.10" strapdata/elassandra`
 
 ## Services deployments
 

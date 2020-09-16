@@ -22,7 +22,7 @@ spec:
         - bash
         - -c
         - |
-          echo 'start up...'
+          echo 'classifier start up...'
           python reddit_classifier.py my-release-kafka.default.svc.cluster.local:9092
         image: gcr.io/<project-id>/reddit-classifier
         name: reddit-classifier
