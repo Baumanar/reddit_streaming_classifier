@@ -5,10 +5,10 @@ In a first version this project detects hate speech comments from new comments o
 
 The project is written in Golang for the streaming components and the storage utilities and Python for 
 the classification. The services communicate with Kafka and the data is stored in a cassandra database.
+The stored data is exposed with elasticsearch [(elassandra)](https://www.elassandra.io/)
 
 ![arch](images/arch.png)
 
-https://www.reddit.com/r/politics/comments/ittryt/us_president_said_we_will_develop_herd_mentality/
 ## Dependencies
 
 Go: 

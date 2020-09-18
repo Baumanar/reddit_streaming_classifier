@@ -25,28 +25,33 @@ type Streaming struct {
 }
 
 func Init(config AuthConfig) (*RedditClient, error) {
-	client, err := Authenticate(config)
+	client, err := Authenticate(&config)
 	if err != nil {
 		return nil, err
 	}
-	client.ExpirationTicker = time.NewTicker(time.Second * time.Duration(client.Duration*0.75))
+	client.ExpirationTicker = time.NewTicker(45 * time.Minute)
 	client.Stream = Streaming{
 		CommentListInterval: 1,
 		PostListInterval:    1,
 		PostListSlice:       1,
 	}
-
-	go func(config AuthConfig) {
-		time.Sleep(time.Second * 20)
-		select {
-		case t := <-client.ExpirationTicker.C:
-			log.Printf("Client refreshed authentication at %s", t)
-			temp, err := Authenticate(config)
-			if err != nil {
-				log.Fatal(err)
-			}
-			client.Token = temp.Token
-		}
-	}(client.Config)
+	
+	go client.auto_refresh()
 	return client, err
+}
+
+func (c *RedditClient) update_creds(){
+	temp, _ := Authenticate(&c.Config)
+	c.Token = temp.Token
+}
+
+
+func (c *RedditClient) auto_refresh() {
+	for {
+		select {
+		case <- c.ExpirationTicker.C:
+			log.Println("refresh authentication")
+			c.update_creds()
+		}
+	}
 }

@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strconv"
 	"time"
 )
@@ -45,7 +46,7 @@ func (c RedditClient) Request(request Request) ([]byte, error) {
 	}
 	//log.Printf("Request done for %s,    %s\n", request.ReqType, request.SubReddit)
 
-	//c.checkRateLimit(resp)
+	c.checkRateLimit(resp)
 
 	defer resp.Body.Close()
 
@@ -223,8 +224,65 @@ func (c *RedditClient) GetSubmission(subreddit string, id string) (*api_models.S
 	return &sumbmissionArr[0], nil
 }
 
+func (c *RedditClient) GetComment(id string)  (*api_models.Comment, error){
+	got, err := c.Request(Request{
+		ReqType:   "Submission",
+		SubReddit: "",
+		Method:    "GET",
+		Path:      RedditOauth + "/api/info",
+		Payload:  map[string]string{
+			"id":  id,
+		} ,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	var ret api_models.CommentListing
+	err = json.Unmarshal(got, &ret)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ret.Data.Children[0].Data, nil
+}
+
+
+func (c *RedditClient) IsDeletedComment(id string) (bool, error) {
+	comment, err := c.GetComment(id)
+	if err != nil {
+		return false, err
+	}
+	matched, err := regexp.MatchString(`\[effacé\]|\[deleted\]`, comment.Body)
+	if err != nil {
+		return false, err
+	}
+	return matched, nil
+}
+
+func (c *RedditClient) IsDeletedSubmission(subreddit string, id string) (bool, error) {
+	submission, err := c.GetSubmission(subreddit, id)
+	if err != nil {
+		return false, err
+	}
+	return submission.RemovedByCategory != "", nil
+}
+
+
 func (c *RedditClient) GetSubmissionAnchor(subreddit string, sort string) (last *string, lastId *string, err error) {
 	anchor, err := c.GetSubredditSubmissions(subreddit, sort, "hour", 1)
+	if err != nil {
+		return nil, nil, err
+	}
+	if len(anchor) > 0 {
+		last = &anchor[0].Name
+		lastId = &anchor[0].ID
+	}
+	return last, lastId, err
+}
+
+
+func (c *RedditClient) GetCommentAnchor(subreddit string) (last *string, lastId *string, err error) {
+	anchor, err := c.GetSubredditComments(subreddit, "new", "hour", 1)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -56,7 +56,7 @@ func GetConfigByFile(filePath string) AuthConfig {
 	return creds
 }
 
-func Authenticate(config AuthConfig) (*RedditClient, error) {
+func Authenticate(config *AuthConfig) (*RedditClient, error) {
 
 	form := url.Values{}
 	form.Add("grant_type", "password")
@@ -85,7 +85,7 @@ func Authenticate(config AuthConfig) (*RedditClient, error) {
 	auth := RedditClient{}
 	json.Unmarshal(body, &auth)
 	auth.Client = client
-	auth.Config = config
+	auth.Config = *config
 	auth.UserAgent = config.UserAgent
 	return &auth, err
 }
