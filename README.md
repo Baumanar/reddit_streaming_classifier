@@ -8,7 +8,7 @@ the classification. The services communicate with Kafka and the data is stored i
 
 ![arch](images/arch.png)
 
-
+https://www.reddit.com/r/politics/comments/ittryt/us_president_said_we_will_develop_herd_mentality/
 ## Dependencies
 
 Go: 
@@ -21,7 +21,7 @@ Python:
 - Keras
 - Kafka
 
-And others: [see python requirements](https://github.com/Baumanar/reddit_streaming_classifier/blob/master/reddit_classifier/requirements.txt)
+And others: [see python requirements](reddit_classifier/requirements.txt)
 
 
 ## Requirements

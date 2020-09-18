@@ -130,7 +130,7 @@ func main() {
 					log.Fatal(err)
 				}
 
-				err = data.UpdateClassification(classif.Type, classif.Name, true, classif.Class==1, classif.ProbaHateful, classif.ProbaNotHateful, Session)
+				err = data.UpdateClassification(classif.Type, classif.Name, true, classif.Class == 1, classif.ProbaHateful, classif.ProbaNotHateful, Session)
 				//err = data.CreateClassification(&classif, Session)
 				if err != nil {
 					log.Fatal(err)

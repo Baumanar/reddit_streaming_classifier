@@ -1,0 +1,12 @@
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {"name" : "t3_iu1799"}
+        }
+      ]
+    }
+  },
+  "sort": [{"created_utc": {"order": "asc"}}]
+}

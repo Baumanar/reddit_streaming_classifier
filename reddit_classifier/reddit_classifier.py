@@ -76,7 +76,7 @@ while True:
             print("    Done pred for batch", counter, len(sentences))
             return_messages = list(zip(batch_ids, batch_types, predictions_proba, classes))
             for return_message in return_messages:
-                json_message = json.dumps({"name":return_message[0],
+                json_message = json.dumps({"name": return_message[0],
                                           "type": return_message[1],
                                           "proba_hateful":float(return_message[2][1]),
                                           "proba_not_hateful": float(return_message[2][0]),
@@ -85,4 +85,5 @@ while True:
                 producer.produce("reddit_classification", json_message.encode())
             sentence_batch = []
             batch_ids = []
+            batch_types = []
             counter +=1

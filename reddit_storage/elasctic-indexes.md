@@ -55,5 +55,3 @@ curl -XGET "http://localhost:9200/comments/_search?pretty=true" \
     }
 }
 '
-```
-

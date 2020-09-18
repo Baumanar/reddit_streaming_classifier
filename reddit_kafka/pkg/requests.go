@@ -202,3 +202,35 @@ func (c *RedditClient) GetSubredditCommentsAfter(subreddit string, sort string, 
 	}
 	return sumbmissions, nil
 }
+
+func (c *RedditClient) GetSubmission(subreddit string, id string) (*api_models.Submission, error) {
+	got, err := c.Request(Request{
+		ReqType:   "Submission",
+		SubReddit: subreddit,
+		Method:    "GET",
+		Path:      RedditOauth + "/r/" + subreddit + "/comments/" + id + ".json",
+		Payload:   nil,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	var ret []api_models.SubmissionListing
+	err = json.Unmarshal(got, &ret)
+	if err != nil {
+		return nil, err
+	}
+	sumbmissionArr, err := ret[0].UnwrapData()
+	return &sumbmissionArr[0], nil
+}
+
+func (c *RedditClient) GetSubmissionAnchor(subreddit string, sort string) (last *string, lastId *string, err error) {
+	anchor, err := c.GetSubredditSubmissions(subreddit, sort, "hour", 1)
+	if err != nil {
+		return nil, nil, err
+	}
+	if len(anchor) > 0 {
+		last = &anchor[0].Name
+		lastId = &anchor[0].ID
+	}
+	return last, lastId, err
+}
