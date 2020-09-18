@@ -61,7 +61,8 @@ func (c *RedditClient) checkRateLimit(response *http.Response) {
 	//rateLimitUsed, _ := strconv.Atoi(response.Header.Get("X-Ratelimit-Used"))
 	temp, err := strconv.ParseFloat(response.Header.Get("X-Ratelimit-Remaining"), 64)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("checkRateLimit failed while parsing X-Ratelimit-Remaining, pass...")
+		return
 	}
 	rateLimitRemaining := int(temp)
 	rateLimitReset, _ := strconv.Atoi(response.Header.Get("X-Ratelimit-Reset"))
