@@ -6,24 +6,34 @@ import (
 	"time"
 )
 
+// StreamSubredditComments streams comments from a specified subreddit
+// Returns an output channel on which new comments are sent
 func (r *RedditClient) StreamSubredditComments(subreddit string, refresh int) (<-chan api_models.Comment, error) {
+	// Create an output channel
 	c := make(chan api_models.Comment, 100)
+	// Get the latest comment and start from this point
 	last, _, err := r.GetCommentAnchor(subreddit)
 	if err != nil {
-		log.Fatal("error at GetSubmissionAnchor ", err)
+		log.Fatal("error at GetSubmissionAnchor: ", err)
 	}
-
+	// Start streaming
 	go func() {
 		for {
+			// Get comments that have been posted after the last stored comment
 			new, err := r.GetSubredditCommentsAfter(subreddit, "new", *last, 100)
 			if err != nil {
-				log.Fatal("error at GetSubredditCommentsAfter ", err)
+				log.Fatal("error at GetSubredditCommentsAfter: ", err)
 			}
 			if len(new) < 1 {
+				// No new comments
 				log.Printf("No new comment found in: %s %s, sleeping for %ds\n", subreddit, *last, refresh)
+				// Check if the comment has been deleted
+				// If the latest comment has been deleted, the api wont be able to find newer comments and will
+				// indefinitely send an empty list of new comments
 				isDeletedComment, err := r.IsDeletedComment(*last)
 				if isDeletedComment{
 					log.Printf("last comment got deleted, updating anchor: %s %s", subreddit, *last)
+					// Get latest comment sent
 					last, _, err = r.GetCommentAnchor(subreddit)
 					if err != nil {
 						log.Fatal("error at GetSubmissionAnchor in nested loop ", err)
@@ -35,6 +45,7 @@ func (r *RedditClient) StreamSubredditComments(subreddit string, refresh int) (<
 				log.Printf("Found %d new comments in: %s %s\n", len(new), subreddit, *last)
 			}
 			last = &new[0].Name
+			// send new comments
 			for _, v := range new {
 				c <- v
 			}
@@ -46,6 +57,8 @@ func (r *RedditClient) StreamSubredditComments(subreddit string, refresh int) (<
 	return c, nil
 }
 
+// StreamSubredditSubmissions streams comments from a specified subreddit
+// Returns an output channel on which new submissions are sent
 func (r *RedditClient) StreamSubredditSubmissions(subreddit string, sort string, refresh int) (<-chan api_models.Submission, error) {
 	c := make(chan api_models.Submission, 100)
 	last, lastId, err := r.GetSubmissionAnchor(subreddit, sort)

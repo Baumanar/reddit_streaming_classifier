@@ -57,8 +57,8 @@ func (c RedditClient) Request(request Request) ([]byte, error) {
 	return data, nil
 }
 
+// checkRateLimit checks in the response headers how many remaining requests we can do in this time interval
 func (c *RedditClient) checkRateLimit(response *http.Response) {
-	//rateLimitUsed, _ := strconv.Atoi(response.Header.Get("X-Ratelimit-Used"))
 	temp, err := strconv.ParseFloat(response.Header.Get("X-Ratelimit-Remaining"), 64)
 	if err != nil {
 		log.Println("checkRateLimit failed while parsing X-Ratelimit-Remaining, pass...")
@@ -66,9 +66,11 @@ func (c *RedditClient) checkRateLimit(response *http.Response) {
 	}
 	rateLimitRemaining := int(temp)
 	rateLimitReset, _ := strconv.Atoi(response.Header.Get("X-Ratelimit-Reset"))
+	// If the rateLimit is dangerously low, block all streams by using the waitGroup
 	if rateLimitRemaining <= 10 {
 		c.Stream.RateLimit.Add(1)
 		fmt.Printf("Too many request, waiting %ds\n", rateLimitReset)
+		// Wait for the interval to reset
 		time.Sleep(time.Duration(rateLimitReset) * time.Second)
 		c.Stream.RateLimit.Done()
 	}
@@ -90,8 +92,10 @@ func findRedditError(data []byte) error {
 	return nil
 }
 
+// GetSubredditSubmissions sends a request for submissions in specified subreddit, sort and limit (number of items)
 func (c *RedditClient) GetSubredditSubmissions(subreddit string, sort string, tdur string, limit int) ([]api_models.Submission, error) {
 	target := RedditOauth + "/r/" + subreddit + "/" + sort + ".json"
+	// Create associated request struct
 	req := Request{
 		ReqType:   Submission,
 		SubReddit: subreddit,
@@ -118,9 +122,11 @@ func (c *RedditClient) GetSubredditSubmissions(subreddit string, sort string, td
 	return sumbmissions, nil
 }
 
+// GetSubredditSubmissionsAfter sends a request for submissions after last submission (full name) in specified subreddit,
+// sort and limit (number of items)
 func (c *RedditClient) GetSubredditSubmissionsAfter(subreddit string, last string, limit int) ([]api_models.Submission, error) {
-
 	target := RedditOauth + "/r/" + subreddit + "/new.json"
+	// Create associated request struct
 	req := Request{
 		ReqType:   Submission,
 		SubReddit: subreddit,
@@ -147,8 +153,11 @@ func (c *RedditClient) GetSubredditSubmissionsAfter(subreddit string, last strin
 	return sumbmissions, nil
 }
 
+
+// GetSubredditComments sends a request for comments in specified subreddit, sort and limit
 func (c *RedditClient) GetSubredditComments(subreddit string, sort string, tdur string, limit int) ([]api_models.Comment, error) {
 	target := RedditOauth + "/r/" + subreddit + "/comments.json"
+	// Create associated request struct
 	req := Request{
 		ReqType:   SubredditComment,
 		SubReddit: subreddit,
@@ -176,6 +185,7 @@ func (c *RedditClient) GetSubredditComments(subreddit string, sort string, tdur 
 	return sumbmissions, nil
 }
 
+// GetSubredditCommentsAfter sends a request for comments after last commment in specified subreddit, sort and limit
 func (c *RedditClient) GetSubredditCommentsAfter(subreddit string, sort string, last string, limit int) ([]api_models.Comment, error) {
 	target := RedditOauth + "/r/" + subreddit + "/comments.json"
 	req := Request{
@@ -205,6 +215,7 @@ func (c *RedditClient) GetSubredditCommentsAfter(subreddit string, sort string, 
 	return sumbmissions, nil
 }
 
+// GetSubmission sends a request to get a specific submission
 func (c *RedditClient) GetSubmission(subreddit string, id string) (*api_models.Submission, error) {
 	got, err := c.Request(Request{
 		ReqType:   "Submission",
@@ -225,6 +236,7 @@ func (c *RedditClient) GetSubmission(subreddit string, id string) (*api_models.S
 	return &sumbmissionArr[0], nil
 }
 
+// GetComment sends a request to get a specific comment
 func (c *RedditClient) GetComment(id string)  (*api_models.Comment, error){
 	got, err := c.Request(Request{
 		ReqType:   "Submission",
@@ -247,7 +259,7 @@ func (c *RedditClient) GetComment(id string)  (*api_models.Comment, error){
 	return &ret.Data.Children[0].Data, nil
 }
 
-
+// IsDeletedComment checks if comment is deleted
 func (c *RedditClient) IsDeletedComment(id string) (bool, error) {
 	comment, err := c.GetComment(id)
 	if err != nil {
@@ -260,6 +272,7 @@ func (c *RedditClient) IsDeletedComment(id string) (bool, error) {
 	return matched, nil
 }
 
+// IsDeletedComment checks if submission is deleted
 func (c *RedditClient) IsDeletedSubmission(subreddit string, id string) (bool, error) {
 	submission, err := c.GetSubmission(subreddit, id)
 	if err != nil {
@@ -268,7 +281,8 @@ func (c *RedditClient) IsDeletedSubmission(subreddit string, id string) (bool, e
 	return submission.RemovedByCategory != "", nil
 }
 
-
+// GetSubmissionAnchor gets latest submission in specified subreddit, returns its full Name (lastID),
+// its id, and an error
 func (c *RedditClient) GetSubmissionAnchor(subreddit string, sort string) (last *string, lastId *string, err error) {
 	anchor, err := c.GetSubredditSubmissions(subreddit, sort, "hour", 1)
 	if err != nil {
@@ -281,7 +295,8 @@ func (c *RedditClient) GetSubmissionAnchor(subreddit string, sort string) (last 
 	return last, lastId, err
 }
 
-
+// GetSubmissionAnchor gets latest comment in specified subreddit, returns its full Name (lastID),
+// its id, and an error
 func (c *RedditClient) GetCommentAnchor(subreddit string) (last *string, lastId *string, err error) {
 	anchor, err := c.GetSubredditComments(subreddit, "new", "hour", 1)
 	if err != nil {

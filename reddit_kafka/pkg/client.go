@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// RedditClient is the client that makes requests to the api
 type RedditClient struct {
 	Token            string  `json:"access_token"`
 	Duration         float64 `json:"expires_in"`
@@ -17,13 +18,12 @@ type RedditClient struct {
 	Client           *http.Client
 }
 
+// Streaming is for streaming parameters
 type Streaming struct {
-	CommentListInterval int
-	PostListInterval    int
-	PostListSlice       int
 	RateLimit           sync.WaitGroup
 }
 
+// Init initializes the client
 func Init(config AuthConfig) (*RedditClient, error) {
 	client, err := Authenticate(&config)
 	if err != nil {
@@ -31,27 +31,26 @@ func Init(config AuthConfig) (*RedditClient, error) {
 	}
 	client.ExpirationTicker = time.NewTicker(45 * time.Minute)
 	client.Stream = Streaming{
-		CommentListInterval: 1,
-		PostListInterval:    1,
-		PostListSlice:       1,
+
 	}
 	
-	go client.auto_refresh()
+	go client.autoRefresh()
 	return client, err
 }
 
-func (c *RedditClient) update_creds(){
+// updateCreds gets a new auth token
+func (c *RedditClient) updateCreds(){
 	temp, _ := Authenticate(&c.Config)
 	c.Token = temp.Token
 }
 
-
-func (c *RedditClient) auto_refresh() {
+// autoRefresh the client auth
+func (c *RedditClient) autoRefresh() {
 	for {
 		select {
 		case <- c.ExpirationTicker.C:
 			log.Println("refresh authentication")
-			c.update_creds()
+			c.updateCreds()
 		}
 	}
 }
