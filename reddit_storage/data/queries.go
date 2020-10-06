@@ -2,13 +2,14 @@ package data
 
 import (
 	"errors"
-	"github.com/Baumanar/reddit_streaming_classifier/reddit_kafka/api_models"
+	"github.com/Baumanar/reddit_streaming_classifier/reddit_kafka/models"
 	"github.com/gocql/gocql"
 	"log"
 	"strings"
 )
 
-func CreateComment(comment *api_models.Comment, session *gocql.Session) error {
+// CreateComment creates a Comment in the database, without classif info
+func CreateComment(comment *models.Comment, session *gocql.Session) error {
 	q := `
 		INSERT INTO comments (
 		    body,
@@ -58,7 +59,8 @@ func CreateComment(comment *api_models.Comment, session *gocql.Session) error {
 	return err
 }
 
-func CreateSubmission(submission *api_models.Submission, session *gocql.Session) error {
+// CreateSubmission creates a Submission in the database, without classif info
+func CreateSubmission(submission *models.Submission, session *gocql.Session) error {
 	q := `
 		INSERT INTO submissions (
 			title,
@@ -102,7 +104,8 @@ func CreateSubmission(submission *api_models.Submission, session *gocql.Session)
 	return err
 }
 
-func GetComment(name string, session *gocql.Session) (*api_models.Comment, error) {
+// GetComment returns a Comment by its full name
+func GetComment(name string, session *gocql.Session) (*models.Comment, error) {
 
 	m := map[string]interface{}{}
 	q := `
@@ -112,7 +115,7 @@ func GetComment(name string, session *gocql.Session) (*api_models.Comment, error
     	`
 	itr := session.Query(q, name).Consistency(gocql.One).Iter()
 	for itr.MapScan(m) {
-		comment := &api_models.Comment{}
+		comment := &models.Comment{}
 		comment.Body = m["body"].(string)
 		comment.ID = m["id"].(string)
 		comment.Name = m["name"].(string)
@@ -137,7 +140,8 @@ func GetComment(name string, session *gocql.Session) (*api_models.Comment, error
 	return nil, errors.New("document not found")
 }
 
-func GetSubmission(name string, session *gocql.Session) (*api_models.Submission, error) {
+// GetSubmission returns a Submission by its full name
+func GetSubmission(name string, session *gocql.Session) (*models.Submission, error) {
 
 	m := map[string]interface{}{}
 	q := `
@@ -147,7 +151,7 @@ func GetSubmission(name string, session *gocql.Session) (*api_models.Submission,
     	`
 	itr := session.Query(q, name).Consistency(gocql.One).Iter()
 	for itr.MapScan(m) {
-		submission := &api_models.Submission{}
+		submission := &models.Submission{}
 		submission.Title = m["title"].(string)
 		submission.ID = m["id"].(string)
 		submission.Name = m["name"].(string)
@@ -171,6 +175,7 @@ func GetSubmission(name string, session *gocql.Session) (*api_models.Submission,
 	return nil, errors.New("submission not found")
 }
 
+// UpdateComment updates a Comment
 func UpdateComment(name string, params map[string]interface{}, session *gocql.Session) error {
 
 	q := `UPDATE comments SET `
@@ -193,6 +198,7 @@ func UpdateComment(name string, params map[string]interface{}, session *gocql.Se
 	return nil
 }
 
+// UpdateSubmission updates a Submission
 func UpdateSubmission(name string, params map[string]interface{}, session *gocql.Session) error {
 
 	q := `UPDATE submissions SET `
@@ -215,6 +221,7 @@ func UpdateSubmission(name string, params map[string]interface{}, session *gocql
 	return nil
 }
 
+// UpdateCommentClassification updates a Comment classification info
 func UpdateCommentClassification(name string, isClassified bool, isHatespeech bool, probaHateful float64, probaNotHateful float64, session *gocql.Session) error {
 	params := map[string]interface{}{
 		"is_classified":     isClassified,
@@ -230,6 +237,7 @@ func UpdateCommentClassification(name string, isClassified bool, isHatespeech bo
 	return nil
 }
 
+// UpdateSubmissionClassification updates a Submission classification info
 func UpdateSubmissionClassification(name string, isClassified bool, isHatespeech bool, probaHateful float64, probaNotHateful float64, session *gocql.Session) error {
 	params := map[string]interface{}{
 		"is_classified":     isClassified,
@@ -245,6 +253,7 @@ func UpdateSubmissionClassification(name string, isClassified bool, isHatespeech
 	return nil
 }
 
+// UpdateClassification updates a record classification info according to its type tp
 func UpdateClassification(tp string, name string, isClassified bool, isHatespeech bool, probaHateful float64, probaNotHateful float64, session *gocql.Session) error {
 	if tp == "comment" {
 		err := UpdateCommentClassification(name, isClassified, isHatespeech, probaHateful, probaNotHateful, session)

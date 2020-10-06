@@ -1,5 +1,6 @@
 package data
 
+// Classification contains classification result from the classifier
 type Classification struct {
 	Name            string  `json:"name" cql:"name"`
 	Type            string  `json:"type" cql:"type"`

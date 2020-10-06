@@ -20,7 +20,7 @@ type RedditClient struct {
 
 // Streaming is for streaming parameters
 type Streaming struct {
-	RateLimit           sync.WaitGroup
+	RateLimit sync.WaitGroup
 }
 
 // Init initializes the client
@@ -30,16 +30,14 @@ func Init(config AuthConfig) (*RedditClient, error) {
 		return nil, err
 	}
 	client.ExpirationTicker = time.NewTicker(45 * time.Minute)
-	client.Stream = Streaming{
+	client.Stream = Streaming{}
 
-	}
-	
 	go client.autoRefresh()
 	return client, err
 }
 
 // updateCreds gets a new auth token
-func (c *RedditClient) updateCreds(){
+func (c *RedditClient) updateCreds() {
 	temp, _ := Authenticate(&c.Config)
 	c.Token = temp.Token
 }
@@ -48,7 +46,7 @@ func (c *RedditClient) updateCreds(){
 func (c *RedditClient) autoRefresh() {
 	for {
 		select {
-		case <- c.ExpirationTicker.C:
+		case <-c.ExpirationTicker.C:
 			log.Println("refresh authentication")
 			c.updateCreds()
 		}

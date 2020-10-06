@@ -20,21 +20,21 @@ func main() {
 		panic(err)
 	}
 	// Stream comments and submissions from some subreddits
-	c1_sub, err := client.StreamSubredditSubmissions("politics", "new", 30)
-	c2_sub, err := client.StreamSubredditSubmissions("memes", "new", 10)
-	c3_sub, err := client.StreamSubredditSubmissions("funny", "new", 20)
-	c4_sub, err := client.StreamSubredditSubmissions("gaming", "new", 20)
-	c5_sub, err := client.StreamSubredditSubmissions("movies", "new", 20)
+	c1Sub, err := client.StreamSubredditSubmissions("politics", "new", 30)
+	c2Sub, err := client.StreamSubredditSubmissions("memes", "new", 10)
+	c3Sub, err := client.StreamSubredditSubmissions("funny", "new", 20)
+	c4Sub, err := client.StreamSubredditSubmissions("gaming", "new", 20)
+	c5Sub, err := client.StreamSubredditSubmissions("movies", "new", 20)
 
-	c1_com, err := client.StreamSubredditComments("memes", 10)
-	c2_com, err := client.StreamSubredditComments("politics", 10)
-	c3_com, err := client.StreamSubredditComments("funny", 10)
-	c4_com, err := client.StreamSubredditComments("gaming", 10)
-	c5_com, err := client.StreamSubredditComments("movies", 10)
+	c1Com, err := client.StreamSubredditComments("memes", 10)
+	c2Com, err := client.StreamSubredditComments("politics", 10)
+	c3Com, err := client.StreamSubredditComments("funny", 10)
+	c4Com, err := client.StreamSubredditComments("gaming", 10)
+	c5Com, err := client.StreamSubredditComments("movies", 10)
 
 	// Merges all messages in two channels
-	submissionChan := pkg.MergeSubmissionChannels(c1_sub, c2_sub, c3_sub, c4_sub, c5_sub)
-	commentChan := pkg.MergeCommentChannels(c1_com, c2_com, c3_com, c4_com, c5_com)
+	submissionChan := pkg.MergeSubmissionChannels(c1Sub, c2Sub, c3Sub, c4Sub, c5Sub)
+	commentChan := pkg.MergeCommentChannels(c1Com, c2Com, c3Com, c4Com, c5Com)
 
 	broker := cli.SetBroker(os.Args)
 	fmt.Printf("Using Broker: %v\n--------------------------\n\n", broker)

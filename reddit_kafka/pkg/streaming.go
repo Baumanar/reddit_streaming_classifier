@@ -1,16 +1,16 @@
 package pkg
 
 import (
-	"github.com/Baumanar/reddit_streaming_classifier/reddit_kafka/api_models"
+	"github.com/Baumanar/reddit_streaming_classifier/reddit_kafka/models"
 	"log"
 	"time"
 )
 
 // StreamSubredditComments streams comments from a specified subreddit
 // Returns an output channel on which new comments are sent
-func (r *RedditClient) StreamSubredditComments(subreddit string, refresh int) (<-chan api_models.Comment, error) {
+func (r *RedditClient) StreamSubredditComments(subreddit string, refresh int) (<-chan models.Comment, error) {
 	// Create an output channel
-	c := make(chan api_models.Comment, 100)
+	c := make(chan models.Comment, 100)
 	// Get the latest comment and start from this point
 	last, _, err := r.GetCommentAnchor(subreddit)
 	if err != nil {
@@ -31,7 +31,7 @@ func (r *RedditClient) StreamSubredditComments(subreddit string, refresh int) (<
 				// If the latest comment has been deleted, the api wont be able to find newer comments and will
 				// indefinitely send an empty list of new comments
 				isDeletedComment, err := r.IsDeletedComment(*last)
-				if isDeletedComment{
+				if isDeletedComment {
 					log.Printf("last comment got deleted, updating anchor: %s %s", subreddit, *last)
 					// Get latest comment sent
 					last, _, err = r.GetCommentAnchor(subreddit)
@@ -59,9 +59,9 @@ func (r *RedditClient) StreamSubredditComments(subreddit string, refresh int) (<
 
 // StreamSubredditSubmissions streams comments from a specified subreddit
 // Returns an output channel on which new submissions are sent
-func (r *RedditClient) StreamSubredditSubmissions(subreddit string, sort string, refresh int) (<-chan api_models.Submission, error) {
-	c := make(chan api_models.Submission, 100)
-	last, lastId, err := r.GetSubmissionAnchor(subreddit, sort)
+func (r *RedditClient) StreamSubredditSubmissions(subreddit string, sort string, refresh int) (<-chan models.Submission, error) {
+	c := make(chan models.Submission, 100)
+	last, lastID, err := r.GetSubmissionAnchor(subreddit, sort)
 	if err != nil {
 		log.Fatal("error at GetSubmissionAnchor ", err)
 	}
@@ -73,10 +73,10 @@ func (r *RedditClient) StreamSubredditSubmissions(subreddit string, sort string,
 			}
 			if len(new) < 1 {
 				log.Printf("No new submission found in: %s %s, sleeping for %ds\n", subreddit, *last, refresh)
-				isDeletedSub, err := r.IsDeletedSubmission(subreddit, *lastId)
-				if isDeletedSub{
-					log.Printf("last submission got deleted, updating anchor: %s %s", subreddit, *lastId)
-					last, lastId, err = r.GetSubmissionAnchor(subreddit, sort)
+				isDeletedSub, err := r.IsDeletedSubmission(subreddit, *lastID)
+				if isDeletedSub {
+					log.Printf("last submission got deleted, updating anchor: %s %s", subreddit, *lastID)
+					last, lastID, err = r.GetSubmissionAnchor(subreddit, sort)
 					if err != nil {
 						log.Fatal("error at GetSubmissionAnchor in nested loop ", err)
 					}
@@ -87,7 +87,7 @@ func (r *RedditClient) StreamSubredditSubmissions(subreddit string, sort string,
 				log.Printf("Found %d new submissions in: %s %s\n", len(new), subreddit, *last)
 			}
 			last = &new[0].Name
-			lastId = &new[0].ID
+			lastID = &new[0].ID
 
 			for i := range new {
 				c <- new[len(new)-i-1]

@@ -14,9 +14,10 @@ import (
 
 const (
 	tokenURL    = "https://www.reddit.com/api/v1/access_token"
-	RedditOauth = "https://oauth.reddit.com"
+	redditOauth = "https://oauth.reddit.com"
 )
 
+// AuthConfig is the struct storing the reddit credentials
 type AuthConfig struct {
 	ClientID     string
 	ClientSecret string
@@ -25,6 +26,7 @@ type AuthConfig struct {
 	Password     string
 }
 
+// GetConfigByEnv gets the reddit credentials from the env vars
 func GetConfigByEnv() AuthConfig {
 	return AuthConfig{
 		ClientID:     os.Getenv("CLIENT_ID"),
@@ -35,8 +37,9 @@ func GetConfigByEnv() AuthConfig {
 	}
 }
 
+// GetConfigByFile gets the reddit credentials from a config file
 func GetConfigByFile(filePath string) AuthConfig {
-	ClientId, _ := regexp.Compile(`CLIENT_ID\s*=\s*(.+)`)
+	ClientID, _ := regexp.Compile(`CLIENT_ID\s*=\s*(.+)`)
 	ClientSecret, _ := regexp.Compile(`CLIENT_SECRET\s*=\s*(.+)`)
 	Username, _ := regexp.Compile(`USERNAME\s*=\s*(.+)`)
 	Password, _ := regexp.Compile(`PASSWORD\s*=\s*(.+)`)
@@ -47,7 +50,7 @@ func GetConfigByFile(filePath string) AuthConfig {
 	}
 	s := string(data)
 	creds := AuthConfig{
-		ClientId.FindStringSubmatch(s)[1],
+		ClientID.FindStringSubmatch(s)[1],
 		ClientSecret.FindStringSubmatch(s)[1],
 		UserAgent.FindStringSubmatch(s)[1],
 		Username.FindStringSubmatch(s)[1],
@@ -56,6 +59,7 @@ func GetConfigByFile(filePath string) AuthConfig {
 	return creds
 }
 
+// Authenticate creates a new RedditClient from the provided config credentials
 func Authenticate(config *AuthConfig) (*RedditClient, error) {
 
 	form := url.Values{}
@@ -70,7 +74,6 @@ func Authenticate(config *AuthConfig) (*RedditClient, error) {
 		log.Fatal(err)
 		return nil, err
 	}
-
 	req.Header.Set("User-Agent", config.UserAgent)
 	req.Header.Set("Authorization", "Basic "+encoded)
 
@@ -83,6 +86,7 @@ func Authenticate(config *AuthConfig) (*RedditClient, error) {
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	auth := RedditClient{}
+	// Unmarshall the body response in the client struct
 	json.Unmarshal(body, &auth)
 	auth.Client = client
 	auth.Config = *config

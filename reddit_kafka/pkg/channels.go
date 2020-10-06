@@ -1,11 +1,12 @@
 package pkg
 
-import "github.com/Baumanar/reddit_streaming_classifier/reddit_kafka/api_models"
+import "github.com/Baumanar/reddit_streaming_classifier/reddit_kafka/models"
 
-func MergeSubmissionChannels(channels ...<-chan api_models.Submission) chan api_models.Submission {
-	outChan := make(chan api_models.Submission)
+// MergeSubmissionChannels merges multiple input submissions channels and returns a single submission channel
+func MergeSubmissionChannels(channels ...<-chan models.Submission) chan models.Submission {
+	outChan := make(chan models.Submission)
 	for _, ch := range channels {
-		go func(ch <-chan api_models.Submission) {
+		go func(ch <-chan models.Submission) {
 			for v := range ch {
 				outChan <- v
 			}
@@ -14,10 +15,11 @@ func MergeSubmissionChannels(channels ...<-chan api_models.Submission) chan api_
 	return outChan
 }
 
-func MergeCommentChannels(channels ...<-chan api_models.Comment) chan api_models.Comment {
-	outChan := make(chan api_models.Comment)
+// MergeCommentChannels merges multiple input comments channels and returns a single comment channel
+func MergeCommentChannels(channels ...<-chan models.Comment) chan models.Comment {
+	outChan := make(chan models.Comment)
 	for _, ch := range channels {
-		go func(ch <-chan api_models.Comment) {
+		go func(ch <-chan models.Comment) {
 			for v := range ch {
 				outChan <- v
 			}

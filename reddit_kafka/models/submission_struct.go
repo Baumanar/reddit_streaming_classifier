@@ -1,6 +1,5 @@
 package models
 
-
 // SubmissionListing is the top object of the returned json
 type SubmissionListing struct {
 	Kind string                `json:"kind"`
@@ -30,7 +29,6 @@ func (p *SubmissionListing) UnwrapData() ([]Submission, error) {
 	}
 	return comments, nil
 }
-
 
 // Submission contains the info of a submission
 // Not all data is stored

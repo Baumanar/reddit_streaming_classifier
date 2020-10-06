@@ -1,10 +1,7 @@
-github.com/Baumanar/reddit_api_streaming v0.0.0-20200912085805-a79d890fe42e/go.mod h1:XnFnhGzXWXuAfYbPUuYCkF7XKkCG243EHGUONEpDjDQ=
 github.com/Baumanar/reddit_streaming_classifier v0.0.0-20200901143450-24a4aba0c569 h1:TyBp0PpvFrLCLjJZdMOOBi6nkQPtKHOOPsyz6/xR1u4=
 github.com/Baumanar/reddit_streaming_classifier v0.0.0-20200901143450-24a4aba0c569/go.mod h1:3xmSZvlXdywKgj4s0mHBha+djsPlCGyO6HHTwLJTsWY=
-github.com/Baumanar/reddit_streaming_classifier v0.0.0-20200914115722-6171c5f2fcdb h1:ibHS32TQKoe6fPOwLbpBlbnKfKc29Uj8VNDi0lJeo3M=
-github.com/Baumanar/reddit_streaming_classifier/reddit_kafka v0.0.0-20200901143450-24a4aba0c569 h1:MCqpxV63D5UBO+Migkr0bC9Bu9gG+w2FVFh7LOdT6cQ=
-github.com/Baumanar/reddit_streaming_classifier/reddit_kafka v0.0.0-20200914115722-6171c5f2fcdb h1:rZZ+8UMNBaihvXVUjPn/Kf8RNAzvQP/+jd7M1ox0ebQ=
-github.com/Baumanar/reddit_streaming_classifier/reddit_kafka v0.0.0-20200914115722-6171c5f2fcdb/go.mod h1:7jjbaKzHlwlVtIWGk7d8jYmtbxX5JKCgtUYJpDTE7EU=
+github.com/Baumanar/reddit_streaming_classifier/reddit_kafka v0.0.0-20201006091811-5d5e60c5254d h1:JJElCmiu81dJCzkHkdEh/HFJn70Up9QZtEJFuAKJdoE=
+github.com/Baumanar/reddit_streaming_classifier/reddit_kafka v0.0.0-20201006091811-5d5e60c5254d/go.mod h1:eRlfxx4eus3cRCb7nxx407JYf/Jno2eNBIBYR/0MGuw=
 github.com/bitly/go-hostpool v0.0.0-20171023180738-a3a6125de932 h1:mXoPYz/Ul5HYEDvkta6I8/rnYM5gSdSV2tJ6XbZuEtY=
 github.com/bitly/go-hostpool v0.0.0-20171023180738-a3a6125de932/go.mod h1:NOuUCSz6Q9T7+igc/hlvDOUdtWKryOrtFyIVABv/p7k=
 github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 h1:DDGfHa7BWjL4YnC6+E63dPcxHo2sUxDIu8g3QgEJdRY=

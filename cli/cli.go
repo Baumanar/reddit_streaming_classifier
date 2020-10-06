@@ -6,15 +6,18 @@ import (
 	"strings"
 )
 
+// Broker contains the host name and the port
 type Broker struct {
 	host string
 	port int
 }
 
+// String returns the broker as a string
 func (b Broker) String() string {
 	return fmt.Sprintf("%v:%v", b.host, b.port)
 }
 
+// SetBroker sets the broker
 func SetBroker(i []string) Broker {
 
 	b := Broker{

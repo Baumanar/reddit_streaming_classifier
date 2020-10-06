@@ -3,7 +3,7 @@ package pkg
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Baumanar/reddit_streaming_classifier/reddit_kafka/api_models"
+	"github.com/Baumanar/reddit_streaming_classifier/reddit_kafka/models"
 	"log"
 	"reflect"
 	"testing"
@@ -166,7 +166,7 @@ func TestRedditClient_Request(t *testing.T) {
 			}
 
 			got, err := c.Request(tt.args.request)
-			var ret []api_models.SubmissionListing
+			var ret []models.SubmissionListing
 			err = json.Unmarshal(got, &ret)
 			if err != nil {
 				log.Fatal(err)

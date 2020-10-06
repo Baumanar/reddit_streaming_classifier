@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/Baumanar/reddit_streaming_classifier/reddit_kafka/api_models"
+	"github.com/Baumanar/reddit_streaming_classifier/reddit_kafka/models"
 	"github.com/Baumanar/reddit_streaming_classifier/reddit_storage/data"
 	"github.com/gocql/gocql"
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
@@ -101,7 +101,7 @@ func main() {
 
 			if *msg.TopicPartition.Topic == "reddit_stream_comments" {
 
-				sub := api_models.Comment{}
+				sub := models.Comment{}
 				err := json.Unmarshal(msg.Value, &sub)
 				if err != nil {
 					log.Fatal(err)
@@ -112,7 +112,7 @@ func main() {
 					log.Fatal(err)
 				}
 			} else if *msg.TopicPartition.Topic == "reddit_stream_submissions" {
-				sub := api_models.Submission{}
+				sub := models.Submission{}
 				err := json.Unmarshal(msg.Value, &sub)
 				if err != nil {
 					log.Fatal(err)
