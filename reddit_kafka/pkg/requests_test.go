@@ -65,43 +65,41 @@ func TestRedditClient_GetSubredditSubmissionsAfter(t *testing.T) {
 		limit     int
 	}
 	tests := []struct {
-		name            string
-		args            args
-		wantDelete      bool
+		name       string
+		args       args
+		wantDelete bool
 	}{
 		{name: "deletedSub1", args: args{
 			subreddit: "politics",
 			last:      "t3_ityvmg",
 			limit:     100,
-		},  wantDelete: true},
+		}, wantDelete: true},
 		{name: "deletedSub2", args: args{
 			subreddit: "politics",
 			last:      "t3_itvxvd",
 			limit:     100,
-		},  wantDelete: false},
+		}, wantDelete: false},
 		{name: "deletedSub3", args: args{
 			subreddit: "politics",
 			last:      "t3_iu0k3b",
 			limit:     100,
-		},  wantDelete: true},
+		}, wantDelete: true},
 		{name: "deletedSub3", args: args{
 			subreddit: "politics",
 			last:      "t3_iufpej",
 			limit:     100,
-		},  wantDelete: true},
+		}, wantDelete: true},
 		{name: "okSub1", args: args{
 			subreddit: "memes",
 			last:      "t3_itx0r1",
 			limit:     100,
-		},  wantDelete: true},
+		}, wantDelete: true},
 		{name: "okSub2", args: args{
 			subreddit: "memes",
 			last:      "t3_itydkn",
 			limit:     100,
-		},  wantDelete: true},
-
+		}, wantDelete: true},
 	}
-
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -132,34 +130,30 @@ func TestRedditClient_Request(t *testing.T) {
 		wantRemoved string
 	}{
 		{name: "reqDeletedModSubmission1", args: args{request: Request{
-			ReqType:   "Submission",
 			SubReddit: "politics",
 			Method:    "GET",
-			Path:      RedditOauth + "/r/politics/comments/itx07n.json",
+			Path:      redditOauth + "/r/politics/comments/itx07n.json",
 			Payload:   nil,
 		}}, wantRemoved: "deleted"},
 
 		{name: "reqDeletedModSubmission2", args: args{request: Request{
-			ReqType:   "Submission",
 			SubReddit: "memes",
 			Method:    "GET",
-			Path:      RedditOauth + "/r/memes/comments/itxkhf.json",
+			Path:      redditOauth + "/r/memes/comments/itxkhf.json",
 			Payload:   nil,
 		}}, wantRemoved: "deleted"},
 
 		{name: "reqDeletedModSubmission2", args: args{request: Request{
-			ReqType:   "Submission",
 			SubReddit: "memes",
 			Method:    "GET",
-			Path:      RedditOauth + "/r/politics/comments/iufpej.json",
+			Path:      redditOauth + "/r/politics/comments/iufpej.json",
 			Payload:   nil,
 		}}, wantRemoved: "deleted"},
 
 		{name: "reqOkSubmission", args: args{request: Request{
-			ReqType:   "Submission",
 			SubReddit: "memes",
 			Method:    "GET",
-			Path:      RedditOauth + "/r/memes/comments/itxf7n.json",
+			Path:      redditOauth + "/r/memes/comments/itxf7n.json",
 			Payload:   nil,
 		}}, wantRemoved: ""},
 	}
@@ -235,20 +229,18 @@ func TestRedditClient_GetComment(t *testing.T) {
 		id        string
 	}
 	tests := []struct {
-		name   string
-		args   args
+		name string
+		args args
 	}{
 		{name: "testDelComment1", args: args{
 			id: "t1_g5hfz2w",
-		} },
+		}},
 		{name: "testDelComment2", args: args{
 			id: "t1_g5ki4kk",
-		} },
+		}},
 		{name: "testDelComment2", args: args{
 			id: "t1_g5kiz50",
-		} },
-
-
+		}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -276,23 +268,22 @@ func TestRedditClient_IsDeletedComment(t *testing.T) {
 		id        string
 	}
 	tests := []struct {
-		name   string
-		args   args
+		name      string
+		args      args
 		isDeleted bool
 	}{
 		{name: "testDelComment1", args: args{
 			id: "t1_g5hfz2w",
-		} ,isDeleted: false },
+		}, isDeleted: false},
 		{name: "testDelComment2", args: args{
 			id: "t1_g5ki4kk",
-		} ,isDeleted: true  },
+		}, isDeleted: true},
 		{name: "testDelComment2", args: args{
 			id: "t1_g5kiz50",
-		} ,isDeleted: false },
+		}, isDeleted: false},
 		{name: "testDelComment2", args: args{
 			id: "t1_g5km26m",
-		} ,isDeleted: true },
-
+		}, isDeleted: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

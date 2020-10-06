@@ -13,15 +13,7 @@ import (
 	"time"
 )
 
-type ReqType string
-
-const (
-	Submission       ReqType = "submission"
-	SubredditComment ReqType = "subreddit_comments"
-)
-
 type Request struct {
-	ReqType   ReqType
 	SubReddit string
 	Method    string
 	Path      string
@@ -44,7 +36,6 @@ func (c RedditClient) Request(request Request) ([]byte, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//log.Printf("Request done for %s,    %s\n", request.ReqType, request.SubReddit)
 
 	c.checkRateLimit(resp)
 
@@ -94,10 +85,9 @@ func findRedditError(data []byte) error {
 
 // GetSubredditSubmissions sends a request for submissions in specified subreddit, sort and limit (number of items)
 func (c *RedditClient) GetSubredditSubmissions(subreddit string, sort string, tdur string, limit int) ([]api_models.Submission, error) {
-	target := RedditOauth + "/r/" + subreddit + "/" + sort + ".json"
+	target := redditOauth + "/r/" + subreddit + "/" + sort + ".json"
 	// Create associated request struct
 	req := Request{
-		ReqType:   Submission,
 		SubReddit: subreddit,
 		Method:    "GET",
 		Path:      target,
@@ -125,10 +115,9 @@ func (c *RedditClient) GetSubredditSubmissions(subreddit string, sort string, td
 // GetSubredditSubmissionsAfter sends a request for submissions after last submission (full name) in specified subreddit,
 // sort and limit (number of items)
 func (c *RedditClient) GetSubredditSubmissionsAfter(subreddit string, last string, limit int) ([]api_models.Submission, error) {
-	target := RedditOauth + "/r/" + subreddit + "/new.json"
+	target := redditOauth + "/r/" + subreddit + "/new.json"
 	// Create associated request struct
 	req := Request{
-		ReqType:   Submission,
 		SubReddit: subreddit,
 		Method:    "GET",
 		Path:      target,
@@ -153,13 +142,11 @@ func (c *RedditClient) GetSubredditSubmissionsAfter(subreddit string, last strin
 	return sumbmissions, nil
 }
 
-
 // GetSubredditComments sends a request for comments in specified subreddit, sort and limit
 func (c *RedditClient) GetSubredditComments(subreddit string, sort string, tdur string, limit int) ([]api_models.Comment, error) {
-	target := RedditOauth + "/r/" + subreddit + "/comments.json"
+	target := redditOauth + "/r/" + subreddit + "/comments.json"
 	// Create associated request struct
 	req := Request{
-		ReqType:   SubredditComment,
 		SubReddit: subreddit,
 		Method:    "GET",
 		Path:      target,
@@ -187,9 +174,8 @@ func (c *RedditClient) GetSubredditComments(subreddit string, sort string, tdur 
 
 // GetSubredditCommentsAfter sends a request for comments after last commment in specified subreddit, sort and limit
 func (c *RedditClient) GetSubredditCommentsAfter(subreddit string, sort string, last string, limit int) ([]api_models.Comment, error) {
-	target := RedditOauth + "/r/" + subreddit + "/comments.json"
+	target := redditOauth + "/r/" + subreddit + "/comments.json"
 	req := Request{
-		ReqType:   SubredditComment,
 		SubReddit: subreddit,
 		Method:    "GET",
 		Path:      target,
@@ -218,10 +204,9 @@ func (c *RedditClient) GetSubredditCommentsAfter(subreddit string, sort string, 
 // GetSubmission sends a request to get a specific submission
 func (c *RedditClient) GetSubmission(subreddit string, id string) (*api_models.Submission, error) {
 	got, err := c.Request(Request{
-		ReqType:   "Submission",
 		SubReddit: subreddit,
 		Method:    "GET",
-		Path:      RedditOauth + "/r/" + subreddit + "/comments/" + id + ".json",
+		Path:      redditOauth + "/r/" + subreddit + "/comments/" + id + ".json",
 		Payload:   nil,
 	})
 	if err != nil {
@@ -237,15 +222,14 @@ func (c *RedditClient) GetSubmission(subreddit string, id string) (*api_models.S
 }
 
 // GetComment sends a request to get a specific comment
-func (c *RedditClient) GetComment(id string)  (*api_models.Comment, error){
+func (c *RedditClient) GetComment(id string) (*api_models.Comment, error) {
 	got, err := c.Request(Request{
-		ReqType:   "Submission",
 		SubReddit: "",
 		Method:    "GET",
-		Path:      RedditOauth + "/api/info",
-		Payload:  map[string]string{
-			"id":  id,
-		} ,
+		Path:      redditOauth + "/api/info",
+		Payload: map[string]string{
+			"id": id,
+		},
 	})
 	if err != nil {
 		log.Fatal(err)
