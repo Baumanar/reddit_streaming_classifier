@@ -1,4 +1,4 @@
-[![Go Report Card](https://goreportcard.com/badge/Baumanar/bill-split)](https://goreportcard.com/report/github.com/Baumanar/reddit_streaming_classifier) 
+[![Go Report Card](https://goreportcard.com/badge/github.com/Baumanar/reddit_streaming_classifier)](https://goreportcard.com/report/github.com/Baumanar/reddit_streaming_classifier)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/Baumanar/reddit_streaming_classifier/blob/master/LICENSE) 
 
 # The Reddit Streaming classifier
