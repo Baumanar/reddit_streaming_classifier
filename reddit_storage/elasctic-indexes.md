@@ -8,7 +8,7 @@ kubectl exec -it -n default $(kubectl get pods -n default -l app=elassandra,rele
 
 Once connected, you can create indexes
 
-####Create index on comments
+#### Create index on comments
 ```
 curl -XPUT -H 'Content-Type: application/json' 'http://localhost:9200/comments' -d '{
     "settings": { "keyspace":"reddit_storage" },
@@ -21,7 +21,7 @@ curl -XPUT -H 'Content-Type: application/json' 'http://localhost:9200/comments' 
 ```
 
 
-####Create index on submissions
+#### Create index on submissions
 
 ```
 curl -XPUT -H 'Content-Type: application/json' 'http://localhost:9200/submissions' -d '{
