@@ -1,12 +1,15 @@
-package api_models
+package models
 
+// CommentListingList is the top object of the returned json
 type CommentListingList []CommentListing
 
+// CommentListing if the list component
 type CommentListing struct {
 	Kind string             `json:"kind"`
 	Data CommentListingData `json:"data"`
 }
 
+// UnwrapData unwraps the nested children from a CommentListing and returns the children as a lit of Comment
 func (p *CommentListing) UnwrapData() ([]Comment, error) {
 	var comments []Comment
 	for _, children := range p.Data.Children {
@@ -15,6 +18,7 @@ func (p *CommentListing) UnwrapData() ([]Comment, error) {
 	return comments, nil
 }
 
+// CommentListingData contains data of a CommentListing
 type CommentListingData struct {
 	Modhash  string         `json:"modhash"`
 	Dist     float64        `json:"dist"`
@@ -23,11 +27,14 @@ type CommentListingData struct {
 	Before   string         `json:"before"`
 }
 
+// CommentChild ...
 type CommentChild struct {
 	Kind string  `json:"kind"`
 	Data Comment `json:"data"`
 }
 
+// Comment contains the info of a comment
+// Not all data is stored
 type Comment struct {
 	Body              string  `json:"body" cql:"body"`
 	ID                string  `json:"id" cql:"id"`

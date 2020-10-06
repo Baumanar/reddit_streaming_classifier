@@ -1,10 +1,13 @@
-package api_models
+package models
 
+
+// SubmissionListing is the top object of the returned json
 type SubmissionListing struct {
 	Kind string                `json:"kind"`
 	Data SubmissionListingData `json:"data"`
 }
 
+// SubmissionListingData if the list component
 type SubmissionListingData struct {
 	Modhash  interface{}        `json:"modhash"`
 	Dist     int64              `json:"dist"`
@@ -13,11 +16,13 @@ type SubmissionListingData struct {
 	Before   interface{}        `json:"before"`
 }
 
+// PostListingChild ...
 type PostListingChild struct {
 	Kind string     `json:"kind"`
 	Data Submission `json:"data"`
 }
 
+// UnwrapData unwraps the nested children from a CommentListing and returns the children as a lit of Comment
 func (p *SubmissionListing) UnwrapData() ([]Submission, error) {
 	var comments []Submission
 	for _, children := range p.Data.Children {
@@ -26,6 +31,9 @@ func (p *SubmissionListing) UnwrapData() ([]Submission, error) {
 	return comments, nil
 }
 
+
+// Submission contains the info of a submission
+// Not all data is stored
 type Submission struct {
 	Title             string  `json:"title" cql:"title"`
 	ID                string  `json:"id" cql:"id"`
