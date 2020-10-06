@@ -166,6 +166,9 @@ func TestRedditClient_Request(t *testing.T) {
 			}
 
 			got, err := c.Request(tt.args.request)
+			if err != nil {
+				log.Fatal(err)
+			}
 			var ret []models.SubmissionListing
 			err = json.Unmarshal(got, &ret)
 			if err != nil {
@@ -247,7 +250,7 @@ func TestRedditClient_GetComment(t *testing.T) {
 			c := &RedditClient{}
 			c, err := Init(authConfig)
 			if err != nil {
-				panic(err)
+				log.Fatal(err)
 			}
 			comment, err := c.GetComment(tt.args.id)
 			//fmt.Println(comment.Subreddit)
@@ -290,7 +293,7 @@ func TestRedditClient_IsDeletedComment(t *testing.T) {
 			c := &RedditClient{}
 			c, err := Init(authConfig)
 			if err != nil {
-				panic(err)
+				log.Fatal(err)
 			}
 			gotDeleted, err := c.IsDeletedComment(tt.args.id)
 			if !reflect.DeepEqual(gotDeleted, tt.isDeleted) {

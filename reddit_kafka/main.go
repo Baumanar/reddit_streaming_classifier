@@ -20,17 +20,17 @@ func main() {
 		panic(err)
 	}
 	// Stream comments and submissions from some subreddits
-	c1Sub, err := client.StreamSubredditSubmissions("politics", "new", 30)
-	c2Sub, err := client.StreamSubredditSubmissions("memes", "new", 10)
-	c3Sub, err := client.StreamSubredditSubmissions("funny", "new", 20)
-	c4Sub, err := client.StreamSubredditSubmissions("gaming", "new", 20)
-	c5Sub, err := client.StreamSubredditSubmissions("movies", "new", 20)
+	c1Sub, _ := client.StreamSubredditSubmissions("politics", "new", 30)
+	c2Sub, _ := client.StreamSubredditSubmissions("memes", "new", 10)
+	c3Sub, _ := client.StreamSubredditSubmissions("funny", "new", 20)
+	c4Sub, _ := client.StreamSubredditSubmissions("gaming", "new", 20)
+	c5Sub, _ := client.StreamSubredditSubmissions("movies", "new", 20)
 
-	c1Com, err := client.StreamSubredditComments("memes", 10)
-	c2Com, err := client.StreamSubredditComments("politics", 10)
-	c3Com, err := client.StreamSubredditComments("funny", 10)
-	c4Com, err := client.StreamSubredditComments("gaming", 10)
-	c5Com, err := client.StreamSubredditComments("movies", 10)
+	c1Com, _ := client.StreamSubredditComments("memes", 10)
+	c2Com, _ := client.StreamSubredditComments("politics", 10)
+	c3Com, _ := client.StreamSubredditComments("funny", 10)
+	c4Com, _ := client.StreamSubredditComments("gaming", 10)
+	c5Com, _ := client.StreamSubredditComments("movies", 10)
 
 	// Merges all messages in two channels
 	submissionChan := pkg.MergeSubmissionChannels(c1Sub, c2Sub, c3Sub, c4Sub, c5Sub)

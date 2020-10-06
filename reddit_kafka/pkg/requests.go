@@ -31,13 +31,16 @@ func (c RedditClient) Request(request Request) ([]byte, error) {
 	}
 	values = values[:len(values)-1]
 	req, err := http.NewRequest(request.Method, request.Path+values, nil)
+	if err != nil {
+		return nil, err
+	}
 	req.Header.Set("User-Agent", c.UserAgent)
 	req.Header.Set("Authorization", "bearer "+c.Token)
 
 	resp, err := c.Client.Do(req)
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	c.checkRateLimit(resp)

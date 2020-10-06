@@ -31,6 +31,9 @@ func (r *RedditClient) StreamSubredditComments(subreddit string, refresh int) (<
 				// If the latest comment has been deleted, the api wont be able to find newer comments and will
 				// indefinitely send an empty list of new comments
 				isDeletedComment, err := r.IsDeletedComment(*last)
+				if err != nil {
+					log.Fatal("error at IsDeletedComment ", err)
+				}
 				if isDeletedComment {
 					log.Printf("last comment got deleted, updating anchor: %s %s", subreddit, *last)
 					// Get latest comment sent
@@ -74,6 +77,9 @@ func (r *RedditClient) StreamSubredditSubmissions(subreddit string, sort string,
 			if len(new) < 1 {
 				log.Printf("No new submission found in: %s %s, sleeping for %ds\n", subreddit, *last, refresh)
 				isDeletedSub, err := r.IsDeletedSubmission(subreddit, *lastID)
+				if err != nil {
+					log.Fatal("error at IsDeletedSubmission ", err)
+				}
 				if isDeletedSub {
 					log.Printf("last submission got deleted, updating anchor: %s %s", subreddit, *lastID)
 					last, lastID, err = r.GetSubmissionAnchor(subreddit, sort)
