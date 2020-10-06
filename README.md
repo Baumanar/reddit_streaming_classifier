@@ -1,3 +1,6 @@
+[![Go Report Card](https://goreportcard.com/badge/Baumanar/bill-split)](https://goreportcard.com/report/github.com/Baumanar/reddit_streaming_classifier) 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/Baumanar/reddit_streaming_classifier/blob/master/LICENSE) 
+
 # The Reddit Streaming classifier
 
 This project aim is to classify directly streamed reddit comments from some subreddits on some criteria.
